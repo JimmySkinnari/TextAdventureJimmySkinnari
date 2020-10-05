@@ -39,7 +39,7 @@ namespace TextAdventureJimmySkinnari
             }
         }
 
-        public void PrintRoomDescription()
+        public void GetRoomDescription()
         {
             string addedRoomInfo = "";
 
@@ -63,7 +63,7 @@ namespace TextAdventureJimmySkinnari
             return Doors;
         }
 
-        public void PrintRoomName()
+        public void GetRoomName()
         {
             Console.BackgroundColor = ConsoleColor.Red;
             Console.ForegroundColor = ConsoleColor.Yellow;

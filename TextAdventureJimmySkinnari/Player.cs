@@ -22,7 +22,7 @@ namespace TextAdventureJimmySkinnari
         }
 
 
-        public void PickUpItem(string[] input)
+        public void PickUp(string[] input)
         {
             string result = "";
 
@@ -40,7 +40,7 @@ namespace TextAdventureJimmySkinnari
                 {
                     if (input.Contains(item.Name.ToUpper()) && item.CanBePickedUp)
                     {
-                        Console.WriteLine("Taken.");
+                        Console.WriteLine($"\n{item.Name} taken.");
                         Inventory.Add(item);
                         CurrentRoom.RoomItems.Remove(item);
 
@@ -63,20 +63,8 @@ namespace TextAdventureJimmySkinnari
 
         }
 
-        public void DropItem(string[] input)
+        public void Drop(string[] input)
         {
-
-            if (Inventory.Count < 1)
-            {
-                Console.WriteLine("Your inventory is empty");
-                return;
-            }
-
-            if (input.Length < 1)
-            {
-                Console.WriteLine("What do you want to drop?");
-                input = Console.ReadLine().ToUpper().Split(' ');
-            }
 
             string result = string.Join(" ", input);
 
@@ -219,8 +207,6 @@ namespace TextAdventureJimmySkinnari
             {
                 if (input.Contains(item.Name.ToUpper()))
                 {
-                    //Console.WriteLine("");
-                    //Console.WriteLine(item.InspectDescription);
                     return item;
                 }
             }
@@ -229,8 +215,6 @@ namespace TextAdventureJimmySkinnari
             {
                 if (input.Contains(item.Name.ToUpper()))
                 {
-                    //Console.WriteLine("");
-                    //Console.WriteLine(item.InspectDescription);
                     return item;
                 }
             }
@@ -239,14 +223,11 @@ namespace TextAdventureJimmySkinnari
             {
                 if (input.Contains(door.Name.ToUpper()))
                 {
-                    //Console.WriteLine("");
-                    //Console.WriteLine(door.InspectDescription);
                     return door;
                 }
             }
 
-            
-            return new GameObject{inspec;
+            return null;
         }
 
         public void Go(string[] direction)
@@ -268,12 +249,12 @@ namespace TextAdventureJimmySkinnari
                     {
                         CurrentRoom = door.RoomBehindDoor;
                         Console.WriteLine();
-                        CurrentRoom.PrintRoomName();
+                        CurrentRoom.GetRoomName();
                         Console.WriteLine();
 
                         if (CurrentRoom.IsVisited == false)
                         {
-                            CurrentRoom.PrintRoomDescription();
+                            CurrentRoom.GetRoomDescription();
                         }
 
                         CurrentRoom.IsVisited = true;
@@ -287,37 +268,11 @@ namespace TextAdventureJimmySkinnari
             }
         }
 
-        public void UnlockDoor(Item key, Door door)
+
+
+        public List<Item> GetInventory()
         {
-            if (key.Id == door.Id)
-            {
-                door.IsLocked = false;
-                Console.WriteLine(key.Name + " matched the lock. The " + door.Name + " is now unlocked.");
-                this.CurrentRoom = door.RoomBehindDoor;
-            }
-
-            else
-            {
-                Console.WriteLine(key.Name + " can't open this door..");
-            }
-        }
-
-        public void PrintInventory()
-        {
-            if (Inventory.Count < 1)
-            {
-                Console.WriteLine("Your inventory is empty..");
-            }
-
-            else
-            {
-                for (int i = 0; i < Inventory.Count; i++)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("Item nr " + (i + 1) + ": " + Inventory[i].Name);
-
-                }
-            }
+            return Inventory;
         }
     }
 }

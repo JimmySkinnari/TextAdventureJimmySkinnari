@@ -44,9 +44,9 @@ namespace TextAdventureJimmySkinnari
         private void PlayFirstScene()
         {
             //PrintIntroText();
-            player.CurrentRoom.PrintRoomName();
+            player.CurrentRoom.GetRoomName();
             Console.WriteLine();
-            player.CurrentRoom.PrintRoomDescription();
+            player.CurrentRoom.GetRoomDescription();
         }
 
         private void PrintIntroText()
@@ -70,47 +70,65 @@ namespace TextAdventureJimmySkinnari
 
             do
             {
-                WriteInputSign();
+                Output("");
 
-                string[] input = Console.ReadLine().ToUpper().Split(' ').RemoveAll("THE");
+                string[] input = Console.ReadLine().ToUpper().Split(' ').RemoveAll("THE", "UP");
 
 
                 if (input[0] == "LOOK")
                 {
-                    player.CurrentRoom.PrintRoomName();
-                    player.CurrentRoom.PrintRoomDescription();
+                    player.CurrentRoom.GetRoomName();
+                    player.CurrentRoom.GetRoomDescription();
                     continue;
                 }
 
                 if (input[0] == "GET" || input[0] == "TAKE" || input[0] == "PICK")
                 {
 
-                    if (input.Length > 1 && input[1] == "UP")
-                    {
-                        player.PickUpItem(input.Skip(2).ToArray());
-                        continue;
-                    }
-                    player.PickUpItem(input.Skip(1).ToArray());
+                    player.PickUp(input.Skip(1).ToArray());
 
                 }
                 else if (input[0] == "INVENTORY" || input[0] == "I")
                 {
-                    player.PrintInventory();
+
+                    PrintInventory(player.GetInventory());
+
                 }
                 else if (input[0] == "DROP")
                 {
-                    player.DropItem(input.Skip(1).ToArray());
+
+                    if (player.Inventory.Count < 1)
+                    {
+                        Output("Your inventory is empty");
+                        return;
+                    }
+
+                    if (input.Length < 1)
+                    {
+                        Output("What do you want to drop?");
+                        input = Console.ReadLine().ToUpper().Split(' ');
+                    }
+
+                    player.Drop(input.Skip(1).ToArray());
+
                 }
                 else if (input[0] == "INSPECT")
                 {
                     if (input.Length < 2)
                     {
-                        Console.WriteLine("What do you want to inspect?");
-                        WriteInputSign();
+                        Output("What do you want to inspect?");
                         input = Console.ReadLine().ToUpper().Split(' ');
                     }
 
-                    Console.WriteLine(player.Inspect(input).InspectDescription);
+                    if (player.Inspect(input) == null)
+                    {                
+                        Output("There is no object like that..");
+                    }
+                    else
+                    {
+                        Output(player.Inspect(input).InspectDescription);
+                       
+                    }
                 }
                 else if (input[0] == "GO")
                 {
@@ -123,9 +141,8 @@ namespace TextAdventureJimmySkinnari
                 else if (input[0] == "USE")
                 {
                     if (input.Length < 3)
-                    {
-                        Console.WriteLine("What do you want to use??");
-                        WriteInputSign();
+                    {   
+                        Output("What do you want to use??");
                         input = Console.ReadLine().ToUpper().Split(' ');
                     }
 
@@ -137,16 +154,33 @@ namespace TextAdventureJimmySkinnari
                 }
                 else
                 {
-                    Console.WriteLine("What?");
-                    WriteInputSign();
+                    Output("What?");
                     continue;
                 }
 
             } while (gameIsRunning);
         }
 
-        private void WriteInputSign()
+        private void PrintInventory(List<Item> inventory)
         {
+            if (inventory.Count < 1)
+            {
+                Output("Your inventory is empty...");
+            }
+            else
+            {
+                Console.WriteLine("\n  ---- Inventory ---- \n\n");
+
+                for (int i = 0; i < inventory.Count; i++)
+                {
+                    Console.WriteLine("      " + (i+1) + " - " + inventory[i].Name);
+                }
+            }
+        }
+
+        private void Output(string message)
+        {
+            Console.WriteLine(message);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("");
             Console.Write("> ");
