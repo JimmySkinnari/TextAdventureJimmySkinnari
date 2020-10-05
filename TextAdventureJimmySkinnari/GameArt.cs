@@ -18,7 +18,11 @@ namespace TextAdventureJimmySkinnari
             Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine();
-            Console.WriteLine("                          A Text adventure game                                 ");
+            TypeAnimation("                              A text adventure game");
+
+            Console.WriteLine("");
+            Console.WriteLine("");
+            TypeAnimation("                            Press enter to continue..");
 
         }
 
@@ -46,6 +50,17 @@ namespace TextAdventureJimmySkinnari
                                                        |   Entrance  |
                                                        |_____________|
                                                                                     ");
+        }
+
+
+
+        public void TypeAnimation(string line)
+        {
+            for (int i = 0; i < line.Length; i++)
+            {
+                Console.Write(line[i]);
+                System.Threading.Thread.Sleep(25); // Sleep for 150 milliseconds
+            }
         }
     }
 }

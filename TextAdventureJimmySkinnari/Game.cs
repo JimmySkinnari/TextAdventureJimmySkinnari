@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Xml;
 
 namespace TextAdventureJimmySkinnari
 {
@@ -35,34 +33,17 @@ namespace TextAdventureJimmySkinnari
         private void WelcomeText()
         {
             Art.GetGameLogo();
-            Console.Write("\n\n\n\t\t\tPress enter to continue..");
 
             Console.ReadLine();
             Console.Clear();
         }
-
         private void PlayFirstScene()
         {
-            //PrintIntroText();
             player.CurrentRoom.GetRoomName();
             Console.WriteLine();
             player.CurrentRoom.GetRoomDescription();
         }
 
-        private void PrintIntroText()
-        {
-            TypeLine("hej och välkommen till spele aowjdaowijd io aoidjoawod oijdaoiio oijdoijao ");
-            //Thread.Sleep(6000);
-            Console.Clear();
-        }
-        static void TypeLine(string line)
-        {
-            for (int i = 0; i < line.Length; i++)
-            {
-                Console.Write(line[i]);
-                System.Threading.Thread.Sleep(25); // Sleep for 150 milliseconds
-            }
-        }
 
         private void Update()
         {
@@ -161,31 +142,6 @@ namespace TextAdventureJimmySkinnari
             } while (gameIsRunning);
         }
 
-        private void PrintInventory(List<Item> inventory)
-        {
-            if (inventory.Count < 1)
-            {
-                Output("Your inventory is empty...");
-            }
-            else
-            {
-                Console.WriteLine("\n  ---- Inventory ---- \n\n");
-
-                for (int i = 0; i < inventory.Count; i++)
-                {
-                    Console.WriteLine("      " + (i+1) + " - " + inventory[i].Name);
-                }
-            }
-        }
-
-        private void Output(string message)
-        {
-            Console.WriteLine(message);
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("");
-            Console.Write("> ");
-            Console.ResetColor();
-        }
 
         private void InitializeWorld()
         {
@@ -257,6 +213,31 @@ namespace TextAdventureJimmySkinnari
             Console.Clear();
         }
 
+
+        private void Output(string message)
+        {
+            Console.WriteLine(message);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("");
+            Console.Write("> ");
+            Console.ResetColor();
+        }
+        private void PrintInventory(List<Item> inventory)
+        {
+            if (inventory.Count < 1)
+            {
+                Output("Your inventory is empty...");
+            }
+            else
+            {
+                Console.WriteLine("\n  ---- Inventory ---- \n\n");
+
+                for (int i = 0; i < inventory.Count; i++)
+                {
+                    Console.WriteLine("      " + (i + 1) + " - " + inventory[i].Name);
+                }
+            }
+        }
         private void PrintHelp()
         {
 

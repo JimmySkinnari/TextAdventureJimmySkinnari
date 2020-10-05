@@ -6,12 +6,8 @@ namespace TextAdventureJimmySkinnari
     {
         static void Main(string[] args)
         {
-            GameArt ga = new GameArt();
-            ga.GetMap();
             Game game = new Game();
             game.PlayGame();
-
-
             Console.ReadLine();
         }
     }

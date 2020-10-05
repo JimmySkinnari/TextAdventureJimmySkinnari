@@ -193,14 +193,6 @@ namespace TextAdventureJimmySkinnari
             Console.WriteLine("You dont have that in your inventory.");
         }
 
-        private void PrintCombineItemsMessage(int id)
-        {
-            if (id == 3)
-            {
-                Console.WriteLine("You put the gasmask on to the co-worker and his life might be saved!..");
-            }
-        }
-
         internal GameObject Inspect(string[] input)
         {
             foreach (Item item in Inventory)
@@ -265,6 +257,14 @@ namespace TextAdventureJimmySkinnari
             if (flag)
             {
                 Console.WriteLine("You can't go that way..");
+            }
+        }
+
+        private void PrintCombineItemsMessage(int id)
+        {
+            if (id == 3)
+            {
+                Console.WriteLine("You put the gasmask on to the co-worker and his life might be saved!..");
             }
         }
 
