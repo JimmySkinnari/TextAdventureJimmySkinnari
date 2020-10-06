@@ -8,10 +8,7 @@ namespace TextAdventureJimmySkinnari
 {
     class TextHandler
     {
-
-
-
-
+        public string Message { get; set; }
 
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace TextAdventureJimmySkinnari
 {
-    public delegate string OutputMessage (string message);
+    //public delegate string OutputMessage (string message);
     public class Game
     {
         Player player;
