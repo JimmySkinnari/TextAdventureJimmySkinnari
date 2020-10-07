@@ -6,13 +6,9 @@ namespace TextAdventureJimmySkinnari
 {
     public class Player
     {
-
         public string Name { get; set; }
-        public bool IsAlive { get; set; } = true;
         public Room CurrentRoom { get; set; }
-        public List<Item> Gear { get; set; } = new List<Item>();
         public List<Item> Inventory { get; set; } = new List<Item>();
-
 
         public Player(string name)
         {
@@ -21,41 +17,27 @@ namespace TextAdventureJimmySkinnari
 
         public void PickUp(string[] input)
         {
-            if (CurrentRoom.RoomItems != null)
+            foreach (Item item in CurrentRoom.RoomItems)
             {
-
-                foreach (Item item in CurrentRoom.RoomItems)
+                if (!input.Contains(item.Name.ToUpper()) || item.CanBePickedUp == false)
                 {
-                    if (!input.Contains(item.Name.ToUpper()) || item.CanBePickedUp == false)
-                    {
-                        Console.WriteLine("Can't pick that up..");
-                        continue;
-                    }
-
-                    Console.WriteLine($"\n{item.Name} taken.");
-                    Inventory.Add(item);
-                    CurrentRoom.RoomItems.Remove(item);
-                    break;
+                    Console.WriteLine("Can't pick that up..");
+                    continue;
                 }
 
+                Console.WriteLine($"\n{item.Name} taken.");
+                Inventory.Add(item);
+                CurrentRoom.RoomItems.Remove(item);
                 return;
             }
-            else
-            {
-                Console.WriteLine("There is no " + input[0] + " to pick up.");
-            }
 
-            Console.WriteLine("What?");
-
+            Console.WriteLine("There is no item like that to pick up...");
         }
-
         public void Drop(string[] input)
         {
-            string result = string.Join(" ", input);
-
             foreach (var item in Inventory)
             {
-                if (!result.Contains(item.Name.ToUpper()))
+                if (!input.Contains(item.Name.ToUpper()))
                 {
                     continue;
                 }
@@ -64,13 +46,11 @@ namespace TextAdventureJimmySkinnari
                 Inventory.Remove(item);
 
                 Console.WriteLine(item.Name + " has been dropped.");
-
                 return;
             }
 
             Console.WriteLine("You don´t have that in your inventory..");
         }
-
         public void Use(string[] input)
         {
             foreach (Item item in Inventory)
@@ -81,19 +61,6 @@ namespace TextAdventureJimmySkinnari
                 {
                     continue;
                 }
-
-                //  var targetItemType == GetTargetItemType();
-                //  if (targetItemType == null)
-                // {
-                //   Console.WriteLine("Cant Use the item on that");
-                // }
-                //
-                // else 
-                // {
-                //    
-                // }
-                //
-
                 if (TargetIsDoor(item, input, itemIndex))
                 {
                     break;
@@ -115,11 +82,10 @@ namespace TextAdventureJimmySkinnari
             return;
         }
 
-        private bool TargetIsDoor(Item item, string[] input, int itemIndex)
+        public bool TargetIsDoor(Item item, string[] input, int itemInputIndex)
         {
             foreach (Door door in CurrentRoom.Doors)
             {
-
                 var doorName = door.Name.Split(' ');
 
                 if (!input.Contains(doorName[0].ToUpper()))
@@ -127,18 +93,12 @@ namespace TextAdventureJimmySkinnari
                     continue;
                 }
 
-                int itemToBeUsedIndex = Array.FindIndex(input, x => x.Contains(doorName[0].ToUpper()));
+                int itemToBeUsedIndex = Array.FindIndex(input, x => x.Contains(doorName[0]));
 
-                if (itemIndex > itemToBeUsedIndex) // check order of input, if user want to i.e use door on key.
-                {
-                    return false;
-                }
-
-                if (door.Id != item.Id)
+                if (itemInputIndex > itemToBeUsedIndex || door.Id != item.Id) // check order of input, if user want to i.e use door on key && if id matches.
                 {
                     Console.WriteLine($"Can't use {item.Name} on {door.Name}.");
                     return false;
-
                 }
 
                 door.IsLocked = false;
@@ -147,7 +107,6 @@ namespace TextAdventureJimmySkinnari
                 {
                     Inventory.Remove(item);
                     Console.WriteLine($"{door.Name} unlocked.");
-
                 }
                 else if (item.Name == "Axe") // Special unlock message when player manage to get into the office
                 {
@@ -158,9 +117,8 @@ namespace TextAdventureJimmySkinnari
                 return true;
             }
 
-            return false;
+            return false; ;
         }
-
         private bool TargetIsRoomItem(Item item, string[] input, int itemIndex)
         {
             foreach (var itemInRoom in CurrentRoom.RoomItems)
@@ -171,24 +129,21 @@ namespace TextAdventureJimmySkinnari
                 {
                     continue;
                 }
-
                 int itemToBeUsedIndex = Array.FindIndex(input, x => x.Contains(itemInRoomNameArray[0].ToUpper()));
 
-                if (itemIndex < itemToBeUsedIndex)
+                if (itemIndex > itemToBeUsedIndex || itemInRoom.Id != item.Id || itemInRoom.CanBeCombined == false)
                 {
-                    if (itemInRoom.Id == item.Id && itemInRoom.CanBeCombined == true) // if items can be used on eachother.
-                    {
-                        PrintCombineItemsMessage(item.Id);
+                    return false;
+                }
 
-                        return true;
-
-                    }
+                if (item.Id == 3)
+                {
+                    Console.WriteLine("You put the gasmask on to the co-worker and his life might be saved!");
                 }
             }
 
-            return false;
+            return true;
         }
-
         private bool TargetIsInventoryItem(Item item, string[] input, int itemIndex)
         {
             foreach (var itemInInventory in Inventory)
@@ -213,53 +168,29 @@ namespace TextAdventureJimmySkinnari
                     {
                         break;
                     }
-                    if (item.Name == "Gasmask")
-                    {
-                        Inventory.Remove(item);
-                        PrintCombineItemsMessage(item.Id);
-                        return true;
-                    }
-                    else
-                    {
-                        Inventory.Remove(item);
-                        Inventory.Remove(itemInInventory);
-                        PrintCombineItemsMessage(item.Id);
-                        return true;
-                    }
 
+                    Inventory.Remove(item);
+                    Inventory.Remove(itemInInventory);
+                    return true;
                 }
             }
 
             return false;
         }
 
-
         internal GameObject Inspect(string[] input)
-
         {
-            //Print item inspectDescription
-
-            foreach (Item item in Inventory)
+            foreach (var item in Game.GameObjects)
             {
-                if (input.Contains(item.Name.ToUpper()))
+                if (input.Contains(item.Name.ToUpper()) && CurrentRoom.Doors.Contains(item) || CurrentRoom.RoomItems.Contains(item))
                 {
                     return item;
                 }
             }
-
-            foreach (Item item in CurrentRoom.RoomItems)
-            {
-                if (input.Contains(item.Name.ToUpper()))
-                {
-                    return item;
-                }
-            }
-
             return null;
         }
         public bool CanGoTo(string[] direction)
         {
-
             foreach (var door in CurrentRoom.Doors)
             {
                 if (!direction.Contains(door.Location.ToUpper()))
@@ -275,38 +206,15 @@ namespace TextAdventureJimmySkinnari
                 {
                     return true;
                 }
-
             }
 
             Console.WriteLine("You can't go that way..");
             return false;
         }
-
         public void Go(string[] direction)
         {
-            foreach (var door in CurrentRoom.Doors)
-            {
-                if (direction[0] == door.Location.ToUpper())
-                {
-                    CurrentRoom = door.RoomBehindDoor;
-                }
-            }
-
-        }
-
-        private void PrintCombineItemsMessage(int id)
-        {
-            if (id == 3)
-            {
-                Console.WriteLine("You put the gasmask on to the co-worker and his life might be saved!");
-            }
-        }
-
-
-
-        public List<Item> GetInventory()
-        {
-            return Inventory;
+            var doorToPass = CurrentRoom.Doors.Find(x => direction.Contains(x.Location.ToUpper()));
+            CurrentRoom = doorToPass.RoomBehindDoor;
         }
     }
 }

@@ -14,7 +14,6 @@ namespace TextAdventureJimmySkinnari
             {
                 return items;
             }
-
         }
     }
 }

@@ -10,21 +10,20 @@ namespace TextAdventureJimmySkinnari
     {
         Player player;
 
-        Room entrance;
-        Room coridor;
-        Room office;
-        Room garage;
-        Room factory;
+        public Room entrance { get; set; } = new Room("Entrance");
+        public Room coridor { get; set; } = new Room("Coridor");
+        public Room office { get; set; } = new Room("Office");
+        public Room garage { get; set; } = new Room("Garage");
+        public Room factory { get; set; } = new LastRoom("Factory");
 
         public static List<GameObject> GameObjects;
         public GameArt Art { get; set; } = new GameArt();
         public List<Room> Rooms { get; set; } = new List<Room>();
 
-
         public void PlayGame()
         {
             Console.SetWindowSize(120, 30);
-            GameObjects = new List<GameObject>();
+            //GameObjects = new List<GameObject>();
 
             InitializePlayer();
             InitializeWorld();
@@ -98,9 +97,7 @@ namespace TextAdventureJimmySkinnari
             {
                 Output("");
 
-
                 string[] input = Console.ReadLine().ToUpper().Split(' ').RemoveAll("THE", "UP");
-
 
                 if (input[0] == "LOOK")
                 {
@@ -123,7 +120,7 @@ namespace TextAdventureJimmySkinnari
                 else if (input[0] == "INVENTORY" || input[0] == "I")
                 {
 
-                    PrintInventory(player.GetInventory());
+                    PrintInventory(player.Inventory);
                     continue;
 
                 }
@@ -131,7 +128,7 @@ namespace TextAdventureJimmySkinnari
                 {
                     if (player.Inventory.Count < 1)
                     {
-                        Console.WriteLine("Your inventory is empty..");                      
+                        Console.WriteLine("Your inventory is empty..");
                     }
                     else if (input.Length < 2)
                     {
@@ -148,7 +145,6 @@ namespace TextAdventureJimmySkinnari
                 {
                     if (input.Length < 2)
                     {
-
                         Console.WriteLine("What do you want to inspect?");
                         input = Console.ReadLine().ToUpper().Split(' ');
                     }
@@ -221,19 +217,8 @@ namespace TextAdventureJimmySkinnari
 
         }
 
-
-
         private void InitializeWorld()
         {
-            bool locked = true;
-
-            // Initialize Rooms
-            entrance = new Room("Entrance", "");
-            coridor = new Room("Coridor", "");
-            office = new Room("Office", "");
-            garage = new Room("Garage", "");
-            factory = new LastRoom("Factory", "");
-
             Rooms.Add(entrance);
             Rooms.Add(coridor);
             Rooms.Add(office);
@@ -241,23 +226,14 @@ namespace TextAdventureJimmySkinnari
             Rooms.Add(factory);
 
             // Initialize doors
-            Door hallDoor1 = new Door("", "north", "There is an open door to the north that seems to lead to the coridor.", coridor);
-            Door coridorDoorNorth = new Door("Factory door", locked, 1, "north", "Smoke comes out towards you from the tiny cracks around the door to the north that leads to the factory.", "This door is locked. As far as i can remember, the only person who has the key is the supervisor.", factory);
-            Door coridorDoorWest = new Door("Office door", locked, 2, "west", "The office to the west is locked.", "The supervisor allways locks his office when he leaves for the day.", office);
-            Door coridorDoorEast = new Door("Garage door", "east", "There is an open door to the east that goes to the garage.", garage);
-            Door coridorDoorSouth = new Door("Entrance door", "south", "The door back to the entrance is to the south.", entrance);
-            Door officeDoor = new Door("", "east", "The door back to the coridor is to the east.", coridor);
-            Door garageDoor = new Door("", "west", "The door back to the coridor is to the west.", coridor);
-            Door coridorDoor = new Door("", "south", "The door back to the coridor is to the south.", coridor);
-
-            factory.Doors.Add(coridorDoor);
-            garage.Doors.Add(garageDoor);
-            entrance.Doors.Add(hallDoor1);
-            coridor.Doors.Add(coridorDoorSouth);
-            coridor.Doors.Add(coridorDoorEast);
-            coridor.Doors.Add(coridorDoorNorth);
-            coridor.Doors.Add(coridorDoorWest);
-            office.Doors.Add(officeDoor);
+            entrance.Doors.Add(new Door("", "north", "There is an open door to the north that seems to lead to the coridor.", coridor));
+            coridor.Doors.Add(new Door("Factory door", 1, "north", "Smoke comes out towards you from the tiny cracks around the door to the north that leads to the factory.", "This door is locked. As far as i can remember, the only person who has the key is the supervisor.", factory));
+            coridor.Doors.Add(new Door("Office door", 2, "west", "The office to the west is locked.", "The supervisor allways locks his office when he leaves for the day.", office));
+            coridor.Doors.Add(new Door("Garage door", "east", "There is an open door to the east that goes to the garage.", garage));
+            coridor.Doors.Add(new Door("Entrance door", "south", "The door back to the entrance is to the south.", entrance));
+            office.Doors.Add(new Door("", "east", "The door back to the coridor is to the east.", coridor));
+            garage.Doors.Add(new Door("", "west", "The door back to the coridor is to the west.", coridor));
+            factory.Doors.Add(new Door("", "south", "The door back to the coridor is to the south.", coridor));
 
             player.CurrentRoom = entrance;
         }
@@ -280,18 +256,6 @@ namespace TextAdventureJimmySkinnari
             coridor.RoomItems.Add(employee);
             coridor.RoomItems.Add(phone);
             factory.RoomItems.Add(sprinklerSystem);
-
-            foreach (var room in Rooms)
-            {
-                foreach (var item in room.Doors)
-                {
-                    GameObjects.Add(item);
-                }
-                foreach (var item in room.RoomItems)
-                {
-                    GameObjects.Add(item);
-                }
-            }
         }
         private void InitializePlayer()
         {
@@ -376,11 +340,6 @@ namespace TextAdventureJimmySkinnari
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
         }
-        public static List<GameObject> GetGameObjects()
-        {
-            return GameObjects;
-        }
-
         private void EndGame()
         {
             Console.WriteLine("Game Over");

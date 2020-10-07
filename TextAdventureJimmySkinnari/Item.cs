@@ -20,7 +20,6 @@
             ObjectDescription = description;
             Id = id;
             InspectDescription = inspectDescription;
-
         }
     }
 }

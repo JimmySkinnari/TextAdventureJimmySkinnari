@@ -4,7 +4,6 @@ namespace TextAdventureJimmySkinnari
 {
     public class GameArt
     {
-
         public void GetGameLogo()
         {
             Console.WriteLine(@"            )          )    )        (            )     )   (    (   (        ");
@@ -25,7 +24,6 @@ namespace TextAdventureJimmySkinnari
             TypeAnimation("                            Press enter to continue..");
 
         }
-
         public string  GetMap()
         {
             return (@"     
@@ -51,9 +49,6 @@ namespace TextAdventureJimmySkinnari
                                                        |_____________|
                                                                                     ");
         }
-
-
-
         public void TypeAnimation(string line)
         {
             for (int i = 0; i < line.Length; i++)

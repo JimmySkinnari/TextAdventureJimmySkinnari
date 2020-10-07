@@ -47,7 +47,6 @@
     <Compile Include="Door.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameArt.cs" />
-    <Compile Include="GameLogic.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="LastRoom.cs" />
