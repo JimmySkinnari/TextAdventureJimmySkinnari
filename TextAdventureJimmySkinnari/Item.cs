@@ -15,14 +15,13 @@
             InspectDescription = inspectDescription;
         }
 
-        public Item(string name, string description, int id, string inspectDescription, bool canBePickedUp, bool canBeCombined)
+        public Item(string name, string description, int id, string inspectDescription)
         {
             Name = name;
             ObjectDescription = description;
             Id = id;
             InspectDescription = inspectDescription;
-            CanBePickedUp = canBePickedUp;
-            CanBeCombined = canBeCombined;
+
         }
     }
 }

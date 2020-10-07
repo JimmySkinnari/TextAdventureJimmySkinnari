@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace TextAdventureJimmySkinnari
 {
@@ -21,11 +22,12 @@ namespace TextAdventureJimmySkinnari
 
         public void PlayGame()
         {
-            WelcomeText();
+            Console.SetWindowSize(120, 30);
+
             InitializePlayer();
             InitializeWorld();
             InitializeItems();
-            PlayFirstScene();
+            FirstScene();
             Update();
             EndGame();
         }
@@ -37,9 +39,15 @@ namespace TextAdventureJimmySkinnari
             Console.ReadLine();
             Console.Clear();
         }
-        private void PlayFirstScene()
+        private void FirstScene()
         {
-            PrintRoomInfo(player.CurrentRoom);
+            //WelcomeText();
+            //PrintHelp();
+            //Console.WriteLine("");
+            //Console.WriteLine("");
+            //Console.Write("Press enter to continue..");
+            //Console.ReadLine();
+            Console.Clear();
         }
 
         private void PrintRoomInfo(Room room)
@@ -64,14 +72,17 @@ namespace TextAdventureJimmySkinnari
                 addedRoomInfo += "\t" + item.ObjectDescription + "\n";
             }
 
+            room.IsVisited = true;
             Console.WriteLine(room.Description + addedRoomInfo);
         }
 
         private void PrintRoomName(Room room)
         {
+            Console.WriteLine("");
+            Console.Write("        ");
             Console.BackgroundColor = ConsoleColor.Red;
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("\n\n" + "\t" + room.Name + "  \t\n");
+            Console.WriteLine("\t " + room.Name + "\t \n");
             Console.ResetColor();
         }
 
@@ -79,24 +90,31 @@ namespace TextAdventureJimmySkinnari
         {
             bool gameIsRunning = true;
 
+            PrintRoomInfo(player.CurrentRoom);
+
             do
             {
                 Output("");
+               
 
                 string[] input = Console.ReadLine().ToUpper().Split(' ').RemoveAll("THE", "UP");
 
 
                 if (input[0] == "LOOK")
                 {
-                    player.CurrentRoom.GetRoomName();
-                    player.CurrentRoom.GetRoomDescription();
+                    PrintRoomInfo(player.CurrentRoom);
                     continue;
                 }
 
                 if (input[0] == "GET" || input[0] == "TAKE" || input[0] == "PICK")
                 {
+                    if (input.Length < 2)
+                    {
+                        Console.WriteLine("What do you want to pick up?");
+                        input = Console.ReadLine().ToUpper().Split(' ');
+                    }
 
-                    player.PickUp(input.Skip(1).ToArray());
+                    player.PickUp(input);
 
                 }
                 else if (input[0] == "INVENTORY" || input[0] == "I")
@@ -107,53 +125,65 @@ namespace TextAdventureJimmySkinnari
                 }
                 else if (input[0] == "DROP")
                 {
-
                     if (player.Inventory.Count < 1)
                     {
-                        Output("Your inventory is empty");
+                        Console.WriteLine("Your inventory is empty..");
                         continue;
                     }
-
-                    if (input.Length < 1)
+                    else if (input.Length < 2)
                     {
-                        Output("What do you want to drop?");
+                        
+                        Console.WriteLine("What do you want to drop?");
                         input = Console.ReadLine().ToUpper().Split(' ');
                     }
 
-                    player.Drop(input.Skip(1).ToArray());
+                    player.Drop(input);
 
                 }
                 else if (input[0] == "INSPECT")
                 {
                     if (input.Length < 2)
                     {
-                        Output("What do you want to inspect?");
+                        
+                        Console.WriteLine("What do you want to inspect?");
                         input = Console.ReadLine().ToUpper().Split(' ');
                     }
 
                     if (player.Inspect(input) == null)
                     {
-                        Output("There is no object like that..");
+                       
+                        Console.WriteLine("There is no object like that..");
                     }
                     else
-                    {
-                        Output(player.Inspect(input).InspectDescription);
-
+                    {     
+                        Console.WriteLine(player.Inspect(input).InspectDescription);
                     }
                 }
-                else if (input[0] == "GO")
+                else if (input[0] == "GO" || input[0] == "NORTH" || input[0] == "EAST" || input[0] == "SOUTH" || input[0] == "WEST")
                 {
-                    player.Go(input.Skip(1).ToArray());
+
+                    if (player.CanGoTo(input))
+                    {
+                        player.Go(input);
+
+                        if (player.CurrentRoom.IsVisited != true)
+                        {
+                            PrintRoomInfo(player.CurrentRoom);
+                            player.CurrentRoom.IsVisited = true;
+                        }
+                        else
+                        {
+                            PrintRoomName(player.CurrentRoom);
+                        }
+                    }
+
                 }
-                else if (input[0] == "NORTH" || input[0] == "EAST" || input[0] == "SOUTH" || input[0] == "WEST")
-                {
-                    player.Go(input);
-                }
+
                 else if (input[0] == "USE")
                 {
                     if (input.Length < 3)
                     {
-                        Output("What do you want to use??");
+                        Output("What do you want to use on what??");
                         input = Console.ReadLine().ToUpper().Split(' ');
                     }
 
@@ -165,7 +195,7 @@ namespace TextAdventureJimmySkinnari
                 }
                 else
                 {
-                    Output("What?");
+                    Console.WriteLine("What?");
                     continue;
                 }
 
@@ -173,18 +203,7 @@ namespace TextAdventureJimmySkinnari
 
         }
 
-        private bool ThereIsDoorToDirection(string direction)
-        {
-            foreach (Door door in player.CurrentRoom.Doors)
-            {
-                if (door.Name == direction)
-                {
-                    return true;
-                }
-            }
 
-            return false;
-        }
 
         private void InitializeWorld()
         {
@@ -198,7 +217,6 @@ namespace TextAdventureJimmySkinnari
             factory = new LastRoom("Factory", "");
 
             Rooms.Add(entrance);
-            entrance.IsVisited = true;
             Rooms.Add(coridor);
             Rooms.Add(office);
             Rooms.Add(garage);
@@ -229,12 +247,12 @@ namespace TextAdventureJimmySkinnari
         {
             GameArt ga = new GameArt();
 
-            Item key = new Item("key", "Key made of silver on the desk.", 1, "There is a tag to the key that says: \"Factory\".", true, false);
-            Item fireAxe = new Item("Axe", "Axe with a wooden shaft on the floor.", 2, "This axe looks brutal", true, false);
-            Item gasMask = new Item("Gasmask", "Emergancy mask on the shelf.", 3, "", true, false);
-            Item employee = new Item("Co-worker", "Passed out co-worker lying on the floor", 3, "Co-worker whispers: \"The key to the factory is inside the office..\"", false, true);
-            Item phone = new Item("phone", "Apple Iphone 11", 10, "Phone displays \"Enter pin or start emergency call\"", true, false);
-            Item sprinklerSystem = new Item("sprinkler system", "Factorys sprincler system, the switch is on the wall", 11, "", false, true);
+            Item key = new Item("key", "Key made of silver on the desk.", 1, "There is a tag to the key that says: \"Factory\".");
+            Item fireAxe = new Item("Axe", "Axe with a wooden shaft on the floor.", 2, "This axe looks brutal");
+            Item gasMask = new Item("Gasmask", "Emergancy mask on the shelf.", 3, "") { CanBeCombined = true };
+            Item employee = new Item("Co-worker", "Passed out co-worker lying on the floor", 3, "Co-worker whispers: \"The key to the factory is inside the office..\"") { CanBeCombined = true, CanBePickedUp = false };
+            Item phone = new Item("phone", "Phone", 10, "Phone displays \"Enter pin or start emergency call\"") { CanBePickedUp = true };
+            Item sprinklerSystem = new Item("sprinkler system", "Factorys sprincler system, the switch is on the wall", 11, "") { CanBePickedUp = false };
             Item bluePrints = new Item("paper", "There is some paper on the desk that looks important.", ga.GetMap());
 
             office.RoomItems.Add(bluePrints);
@@ -269,7 +287,7 @@ namespace TextAdventureJimmySkinnari
         {
             if (inventory.Count < 1)
             {
-                Output("Your inventory is empty...");
+                Console.WriteLine("Your inventory is empty...");
             }
             else
             {
@@ -283,18 +301,54 @@ namespace TextAdventureJimmySkinnari
         }
         private void PrintHelp()
         {
+            Console.WriteLine("");
+            Console.Write("               ");
+            Console.BackgroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("  C O N T R O L S   /   C O M M A N D S  \n");
+            Console.ResetColor();
 
-            Console.WriteLine("\nCommand                                 Description.");
-            Console.WriteLine("\nH                                       Displays Help menu.");
-            Console.WriteLine("LOOK                                    Look around the room.");
-            Console.WriteLine("GET/TAKE/PICK/PICK UP                   Pick up something.");
-            Console.WriteLine("INVENTORY/I                             Check your inventory.");
-            Console.WriteLine("DROP + (item name)                      Drop an item from your inventory.");
-            Console.WriteLine("GO + north/east/west/south              Try to go a certain direction.");
-            Console.WriteLine("INSPECT + (item name)                   Inspect item in Inventory/Room.");
-            Console.WriteLine("USE  + (item name)                      Use an item from your inventory.");
+            Console.WriteLine("\t Command                                 Description.");
+            Console.WriteLine("\t --------                                ------------- ");
+            Console.WriteLine("\n\t H                                       Displays Help menu.");
+
+            ChangeTextForegroundToDarkGray();
+
+            Console.WriteLine("\t LOOK                                    Look around the room.");
+
+            Console.ResetColor();
+
+            Console.WriteLine("\t GET/TAKE/PICK/PICK UP                   Pick up something.");
+
+            ChangeTextForegroundToDarkGray();
+
+            Console.WriteLine("\t INVENTORY/I                             Check your inventory.");
+
+            Console.ResetColor();
+
+            Console.WriteLine("\t DROP + (item name)                      Drop an item from your inventory.");
+
+            ChangeTextForegroundToDarkGray();
+
+            Console.WriteLine("\t GO/MOVE + north/east/west/south         Try to go a certain direction.");
+
+            Console.ResetColor();
+
+            Console.WriteLine("\t INSPECT + (item name)                   Inspect item in Inventory/Room.");
+
+            ChangeTextForegroundToDarkGray();
+
+            Console.WriteLine("\t USE  + (item name)                      Use an item from your inventory.");
+
+            Console.ResetColor();
 
         }
+
+        private void ChangeTextForegroundToDarkGray()
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+        }
+
+       
         private void EndGame()
         {
             Console.WriteLine("Game Over");

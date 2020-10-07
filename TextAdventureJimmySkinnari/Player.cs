@@ -24,9 +24,9 @@ namespace TextAdventureJimmySkinnari
 
         public void PickUp(string[] input)
         {
-
             if (CurrentRoom.RoomItems != null)
             {
+               
                 foreach (Item item in CurrentRoom.RoomItems)
                 {
                     if (input.Contains(item.Name.ToUpper()) && item.CanBePickedUp)
@@ -56,6 +56,14 @@ namespace TextAdventureJimmySkinnari
 
         public void Drop(string[] input)
         {
+            //Add item to current room
+            //Remove item from bag
+
+            if (Inventory.Count < 1)
+            {
+                Console.WriteLine("Your inventory is empty");
+                return;
+            }
 
             string result = string.Join(" ", input);
 
@@ -77,6 +85,7 @@ namespace TextAdventureJimmySkinnari
 
         public void Use(string[] input)
         {
+            // use item on item/door
 
             foreach (Item item in Inventory)
             {
@@ -90,12 +99,10 @@ namespace TextAdventureJimmySkinnari
 
                         if (input.Contains(doorName[0].ToUpper()))
                         {
-
                             int itemToBeUsedIndex = Array.FindIndex(input, x => x.Contains(doorName[0].ToUpper()));
 
                             if (itemIndex < itemToBeUsedIndex) // check order of input, if user want to i.e use door on key.
                             {
-
                                 if (door.Id == item.Id)
                                 {
                                     door.IsLocked = false;
@@ -103,16 +110,20 @@ namespace TextAdventureJimmySkinnari
                                     if (item.Name != "Axe") // Standard unlock message
                                     {
                                         Inventory.Remove(item);
-                                        Console.WriteLine("Unlocked.");
+                                        Console.WriteLine($"{door.Name} unlocked.");
 
                                     }
                                     else if (item.Name == "Axe") // Special unlock message when player manage to get into the office
                                     {
-                                        Console.WriteLine("You swing the axe on the door like Jack Nicholson in The Shining untill you break up the door completely");
-                                        Console.WriteLine("The office door is now on the floor, in pieces and you can go inside.");
+                                        Console.WriteLine("You swing the axe on the door like Jack Nicholson in The Shining until you break up the door completely.");
+                                        Console.WriteLine($"{door.Name} unlocked.");
                                     }
 
                                     return;
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Cant use {item.Name} on {door.Name}");
                                 }
                             }
 
@@ -186,6 +197,8 @@ namespace TextAdventureJimmySkinnari
 
         internal GameObject Inspect(string[] input)
         {
+            //Print item inspectDescription
+
             foreach (Item item in Inventory)
             {
                 if (input.Contains(item.Name.ToUpper()))
@@ -194,7 +207,7 @@ namespace TextAdventureJimmySkinnari
                 }
             }
 
-            foreach (var item in CurrentRoom.RoomItems)
+            foreach (Item item in CurrentRoom.RoomItems)
             {
                 if (input.Contains(item.Name.ToUpper()))
                 {
@@ -202,53 +215,43 @@ namespace TextAdventureJimmySkinnari
                 }
             }
 
-            foreach (var door in CurrentRoom.Doors)
-            {
-                if (input.Contains(door.Name.ToUpper()))
-                {
-                    return door;
-                }
-            }
-
             return null;
         }
 
-        public void Go(string[] direction)
+        public bool CanGoTo(string[] direction)
         {
-            bool flag = true;
 
             foreach (var door in CurrentRoom.Doors)
             {
                 if (direction[0] == door.Location.ToUpper())
                 {
-                    flag = false;
-
                     if (door.IsLocked == true)
                     {
                         Console.WriteLine(door.ObjectDescription);
-                        continue;
+                        return false;
                     }
                     else
                     {
-                        CurrentRoom = door.RoomBehindDoor;
-                        Console.WriteLine();
-                        CurrentRoom.GetRoomName();
-                        Console.WriteLine();
-
-                        if (CurrentRoom.IsVisited == false)
-                        {
-                            CurrentRoom.GetRoomDescription();
-                        }
-
-                        CurrentRoom.IsVisited = true;
-                        continue;
+                        return true;
                     }
                 }
             }
-            if (flag)
+
+            Console.WriteLine("You can't go that way..");
+            return false;
+
+        }
+
+        public void Go(string[] direction)
+        {
+            foreach (var door in CurrentRoom.Doors)
             {
-                Console.WriteLine("You can't go that way..");
+                if (direction[0] == door.Location.ToUpper())
+                {
+                    CurrentRoom = door.RoomBehindDoor;
+                }
             }
+
         }
 
         private void PrintCombineItemsMessage(int id)

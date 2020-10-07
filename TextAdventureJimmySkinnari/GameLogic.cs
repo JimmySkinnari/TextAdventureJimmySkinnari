@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace TextAdventureJimmySkinnari
 {
-    class TextHandler
+    public class GameLogic
     {
-        public string Message { get; set; }
+
+
+
 
     }
 }
