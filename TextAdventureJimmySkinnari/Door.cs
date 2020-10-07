@@ -3,7 +3,6 @@
     public class Door : GameObject
     {
         public bool IsLocked { get; set; } = false;
-        public string Name { get; set; }
         public string Location { get; set; }
         public int Id { get; set; }
         public Room RoomBehindDoor { get; set; }

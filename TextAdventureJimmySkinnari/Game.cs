@@ -16,6 +16,7 @@ namespace TextAdventureJimmySkinnari
         Room garage;
         Room factory;
 
+        public static List<GameObject> GameObjects;
         public GameArt Art { get; set; } = new GameArt();
         public List<Room> Rooms { get; set; } = new List<Room>();
 
@@ -23,6 +24,7 @@ namespace TextAdventureJimmySkinnari
         public void PlayGame()
         {
             Console.SetWindowSize(120, 30);
+            GameObjects = new List<GameObject>();
 
             InitializePlayer();
             InitializeWorld();
@@ -95,7 +97,7 @@ namespace TextAdventureJimmySkinnari
             do
             {
                 Output("");
-               
+
 
                 string[] input = Console.ReadLine().ToUpper().Split(' ').RemoveAll("THE", "UP");
 
@@ -115,51 +117,67 @@ namespace TextAdventureJimmySkinnari
                     }
 
                     player.PickUp(input);
+                    continue;
 
                 }
                 else if (input[0] == "INVENTORY" || input[0] == "I")
                 {
 
                     PrintInventory(player.GetInventory());
+                    continue;
 
                 }
                 else if (input[0] == "DROP")
                 {
                     if (player.Inventory.Count < 1)
                     {
-                        Console.WriteLine("Your inventory is empty..");
-                        continue;
+                        Console.WriteLine("Your inventory is empty..");                      
                     }
                     else if (input.Length < 2)
                     {
-                        
                         Console.WriteLine("What do you want to drop?");
                         input = Console.ReadLine().ToUpper().Split(' ');
                     }
-
-                    player.Drop(input);
-
+                    else
+                    {
+                        player.Drop(input);
+                        continue;
+                    }
                 }
                 else if (input[0] == "INSPECT")
                 {
                     if (input.Length < 2)
                     {
-                        
+
                         Console.WriteLine("What do you want to inspect?");
                         input = Console.ReadLine().ToUpper().Split(' ');
                     }
 
                     if (player.Inspect(input) == null)
                     {
-                       
+
                         Console.WriteLine("There is no object like that..");
                     }
                     else
-                    {     
+                    {
                         Console.WriteLine(player.Inspect(input).InspectDescription);
                     }
+                    continue;
                 }
-                else if (input[0] == "GO" || input[0] == "NORTH" || input[0] == "EAST" || input[0] == "SOUTH" || input[0] == "WEST")
+                else if (input[0] == "GO")
+                {
+                    if (input.Length < 2)
+                    {
+                        Console.Write("Where do you want to go?: ");
+                        input = Console.ReadLine().ToUpper().Split(' ');
+                    }
+                    else
+                    {
+                        input = input.Skip(1).ToArray();
+                        continue;
+                    }
+                }
+                if (input[0] == "NORTH" || input[0] == "EAST" || input[0] == "SOUTH" || input[0] == "WEST")
                 {
 
                     if (player.CanGoTo(input))
@@ -176,18 +194,18 @@ namespace TextAdventureJimmySkinnari
                             PrintRoomName(player.CurrentRoom);
                         }
                     }
-
                 }
 
                 else if (input[0] == "USE")
                 {
                     if (input.Length < 3)
                     {
-                        Output("What do you want to use on what??");
+                        Output("You must write: \"Use {item name} on {item/door name} \"");
                         input = Console.ReadLine().ToUpper().Split(' ');
                     }
 
-                    player.Use(input.Skip(1).ToArray());
+                    player.Use(input);
+                    continue;
                 }
                 else if (input[0] == "H" || input[0] == "HELP")
                 {
@@ -263,6 +281,17 @@ namespace TextAdventureJimmySkinnari
             coridor.RoomItems.Add(phone);
             factory.RoomItems.Add(sprinklerSystem);
 
+            foreach (var room in Rooms)
+            {
+                foreach (var item in room.Doors)
+                {
+                    GameObjects.Add(item);
+                }
+                foreach (var item in room.RoomItems)
+                {
+                    GameObjects.Add(item);
+                }
+            }
         }
         private void InitializePlayer()
         {
@@ -347,8 +376,11 @@ namespace TextAdventureJimmySkinnari
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
         }
+        public static List<GameObject> GetGameObjects()
+        {
+            return GameObjects;
+        }
 
-       
         private void EndGame()
         {
             Console.WriteLine("Game Over");

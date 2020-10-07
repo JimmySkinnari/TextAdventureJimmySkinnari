@@ -2,7 +2,6 @@
 {
     public class Item : GameObject
     {
-        public string Name { get; set; }
         public bool CanBeCombined { get; set; } = false;
         public bool CanBePickedUp { get; set; } = true;
         public int Id { get; set; }
