@@ -23,7 +23,6 @@ namespace TextAdventureJimmySkinnari
         public void PlayGame()
         {
             Console.SetWindowSize(120, 30);
-            //GameObjects = new List<GameObject>();
 
             InitializePlayer();
             InitializeWorld();
@@ -42,12 +41,12 @@ namespace TextAdventureJimmySkinnari
         }
         private void FirstScene()
         {
-            //WelcomeText();
-            //PrintHelp();
-            //Console.WriteLine("");
-            //Console.WriteLine("");
-            //Console.Write("Press enter to continue..");
-            //Console.ReadLine();
+            WelcomeText();
+            PrintHelp();
+            Console.WriteLine("");
+            Console.WriteLine("");
+            Console.Write("\t\t\tPress enter to continue..");
+            Console.ReadLine();
             Console.Clear();
         }
 
@@ -266,7 +265,6 @@ namespace TextAdventureJimmySkinnari
 
             Console.Clear();
         }
-
 
         private void Output(string message)
         {

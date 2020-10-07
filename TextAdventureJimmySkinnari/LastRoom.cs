@@ -5,12 +5,8 @@ namespace TextAdventureJimmySkinnari
 {
     public class LastRoom : Room
     {
-        
         public LastRoom(string name) : base(name)
         {
-
-
         }
-
     }
 }

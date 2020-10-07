@@ -93,7 +93,7 @@ namespace TextAdventureJimmySkinnari
                     continue;
                 }
 
-                int itemToBeUsedIndex = Array.FindIndex(input, x => x.Contains(doorName[0]));
+                int itemToBeUsedIndex = Array.FindIndex(input, x => x.Contains(doorName[0].ToUpper()));
 
                 if (itemInputIndex > itemToBeUsedIndex || door.Id != item.Id) // check order of input, if user want to i.e use door on key && if id matches.
                 {
