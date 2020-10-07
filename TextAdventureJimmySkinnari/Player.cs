@@ -24,15 +24,6 @@ namespace TextAdventureJimmySkinnari
 
         public void PickUp(string[] input)
         {
-            string result = "";
-
-            if (input.Length < 1)
-            {
-                Console.WriteLine("What do you want to pick up?");
-                input = Console.ReadLine().ToUpper().Split(' ');
-                result = string.Join(" ", input);
-
-            }
 
             if (CurrentRoom.RoomItems != null)
             {
@@ -58,7 +49,7 @@ namespace TextAdventureJimmySkinnari
             }
             else
             {
-                Console.WriteLine("There is no " + result);
+                Console.WriteLine("There is no " + input[0] + " to pick up.");
             }
 
         }
@@ -93,7 +84,7 @@ namespace TextAdventureJimmySkinnari
 
                 if (input.Contains(item.Name.ToUpper()))
                 {
-                    foreach (Door door in CurrentRoom.Doors)  
+                    foreach (Door door in CurrentRoom.Doors)
                     {
                         var doorName = door.Name.Split(' ');
 
@@ -129,7 +120,7 @@ namespace TextAdventureJimmySkinnari
                         }
                     } // Check if user wants to use item on door.
 
-                    foreach (var itemInRoom in CurrentRoom.RoomItems) 
+                    foreach (var itemInRoom in CurrentRoom.RoomItems)
                     {
                         var itemInRoomNameArray = itemInRoom.Name.Split(' ');
 
@@ -264,7 +255,7 @@ namespace TextAdventureJimmySkinnari
         {
             if (id == 3)
             {
-                Console.WriteLine("You put the gasmask on to the co-worker and his life might be saved!..");
+                Console.WriteLine("You put the gasmask on to the co-worker and his life might be saved!");
             }
         }
 

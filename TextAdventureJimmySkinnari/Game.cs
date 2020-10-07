@@ -39,11 +39,41 @@ namespace TextAdventureJimmySkinnari
         }
         private void PlayFirstScene()
         {
-            player.CurrentRoom.GetRoomName();
-            Console.WriteLine();
-            player.CurrentRoom.GetRoomDescription();
+            PrintRoomInfo(player.CurrentRoom);
         }
 
+        private void PrintRoomInfo(Room room)
+        {
+            PrintRoomName(room);
+            PrintRoomObjects(room);
+        }
+
+        private void PrintRoomObjects(Room room)
+        {
+            string addedRoomInfo = "";
+
+            foreach (var door in room.Doors)
+            {
+                addedRoomInfo += "\t" + door.ObjectDescription + "\n";
+            }
+
+            addedRoomInfo += "\n";
+
+            foreach (var item in room.RoomItems)
+            {
+                addedRoomInfo += "\t" + item.ObjectDescription + "\n";
+            }
+
+            Console.WriteLine(room.Description + addedRoomInfo);
+        }
+
+        private void PrintRoomName(Room room)
+        {
+            Console.BackgroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("\n\n" + "\t" + room.Name + "  \t\n");
+            Console.ResetColor();
+        }
 
         private void Update()
         {
@@ -81,7 +111,7 @@ namespace TextAdventureJimmySkinnari
                     if (player.Inventory.Count < 1)
                     {
                         Output("Your inventory is empty");
-                        return;
+                        continue;
                     }
 
                     if (input.Length < 1)
@@ -102,13 +132,13 @@ namespace TextAdventureJimmySkinnari
                     }
 
                     if (player.Inspect(input) == null)
-                    {                
+                    {
                         Output("There is no object like that..");
                     }
                     else
                     {
                         Output(player.Inspect(input).InspectDescription);
-                       
+
                     }
                 }
                 else if (input[0] == "GO")
@@ -122,7 +152,7 @@ namespace TextAdventureJimmySkinnari
                 else if (input[0] == "USE")
                 {
                     if (input.Length < 3)
-                    {   
+                    {
                         Output("What do you want to use??");
                         input = Console.ReadLine().ToUpper().Split(' ');
                     }
@@ -140,8 +170,21 @@ namespace TextAdventureJimmySkinnari
                 }
 
             } while (gameIsRunning);
+
         }
 
+        private bool ThereIsDoorToDirection(string direction)
+        {
+            foreach (Door door in player.CurrentRoom.Doors)
+            {
+                if (door.Name == direction)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         private void InitializeWorld()
         {

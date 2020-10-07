@@ -58,8 +58,15 @@ namespace TextAdventureJimmySkinnari
         {
             for (int i = 0; i < line.Length; i++)
             {
-                Console.Write(line[i]);
-                System.Threading.Thread.Sleep(25); // Sleep for 150 milliseconds
+                if (line[i] != ' ')
+                {
+                    Console.Write(line[i]);
+                    System.Threading.Thread.Sleep(25); // Sleep for 150 milliseconds
+                }
+                else
+                {
+                    Console.Write(line[i]);
+                }
             }
         }
     }
