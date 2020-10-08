@@ -42,7 +42,7 @@ namespace TextAdventureJimmySkinnari
         private void FirstScene()
         {
             WelcomeText();
-            PrintHelp();
+            GameArt.PrintControls();
             Console.WriteLine("");
             Console.WriteLine("");
             Console.Write("\t\t\tPress enter to continue..");
@@ -204,7 +204,7 @@ namespace TextAdventureJimmySkinnari
                 }
                 else if (input[0] == "H" || input[0] == "HELP")
                 {
-                    PrintHelp();
+                    GameArt.PrintControls();
                 }
                 else
                 {
@@ -289,54 +289,6 @@ namespace TextAdventureJimmySkinnari
                     Console.WriteLine("      " + (i + 1) + " - " + inventory[i].Name);
                 }
             }
-        }
-        private void PrintHelp()
-        {
-            Console.WriteLine("");
-            Console.Write("               ");
-            Console.BackgroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine("  C O N T R O L S   /   C O M M A N D S  \n");
-            Console.ResetColor();
-
-            Console.WriteLine("\t Command                                 Description.");
-            Console.WriteLine("\t --------                                ------------- ");
-            Console.WriteLine("\n\t H                                       Displays Help menu.");
-
-            ChangeTextForegroundToDarkGray();
-
-            Console.WriteLine("\t LOOK                                    Look around the room.");
-
-            Console.ResetColor();
-
-            Console.WriteLine("\t GET/TAKE/PICK/PICK UP                   Pick up something.");
-
-            ChangeTextForegroundToDarkGray();
-
-            Console.WriteLine("\t INVENTORY/I                             Check your inventory.");
-
-            Console.ResetColor();
-
-            Console.WriteLine("\t DROP + (item name)                      Drop an item from your inventory.");
-
-            ChangeTextForegroundToDarkGray();
-
-            Console.WriteLine("\t GO/MOVE + north/east/west/south         Try to go a certain direction.");
-
-            Console.ResetColor();
-
-            Console.WriteLine("\t INSPECT + (item name)                   Inspect item in Inventory/Room.");
-
-            ChangeTextForegroundToDarkGray();
-
-            Console.WriteLine("\t USE  + (item name)                      Use an item from your inventory.");
-
-            Console.ResetColor();
-
-        }
-
-        private void ChangeTextForegroundToDarkGray()
-        {
-            Console.ForegroundColor = ConsoleColor.DarkGray;
         }
         private void EndGame()
         {
