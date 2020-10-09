@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using TextAdventureJimmySkinnari;
+
+public delegate GameObject GetItem();
 
 namespace TextAdventureJimmySkinnari
 {
@@ -23,20 +27,18 @@ namespace TextAdventureJimmySkinnari
                 {
                     continue;
                 }
-
                 if (item.CanBePickedUp == false)
                 {
-                    Console.WriteLine($"Can't pick up {item.Name}..");
+                    Animate.Line($"Can't pick up {item.Name}..", ConsoleColor.White);
                     return;
                 }
 
-                GameArt.TypeAnimation($"\n{item.Name} taken.", ConsoleColor.Red);
+                Animate.Line($"\n{item.Name} taken.", ConsoleColor.DarkGreen);
                 Inventory.Add(item);
                 CurrentRoom.RoomItems.Remove(item);
                 return;
             }
-
-            Console.WriteLine("There is no item like that to pick up...");
+            Animate.Line($"There is no item like that to pick up...", ConsoleColor.White);
         }
         public void Drop(string[] input)
         {
@@ -50,25 +52,26 @@ namespace TextAdventureJimmySkinnari
                 CurrentRoom.RoomItems.Add(item);
                 Inventory.Remove(item);
 
-                GameArt.TypeAnimation($"{item.Name} has been dropped.", ConsoleColor.Red);
+                Animate.Line($"{item.Name} has been dropped.", ConsoleColor.White);
                 return;
             }
-
-            Console.WriteLine("You don´t have that in your inventory..");
+            Animate.Line($"You don´t have that in your inventory..", ConsoleColor.White);
         }
         public void Use(string[] input)
         {
             foreach (Item item in Inventory)
             {
-                int itemIndex = Array.FindIndex(input, x => x.Contains(item.Name.ToUpper()));
-
                 if (!input.Contains(item.Name.ToUpper()))
                 {
                     continue;
                 }
+
+                int itemIndex = Array.FindIndex(input, x => x.Contains(item.Name.ToUpper()));
+
                 if (TargetIsDoor(item, input, itemIndex))
                 {
                     return;
+
                 }
                 else if (TargetIsRoomItem(item, input, itemIndex))
                 {
@@ -78,13 +81,10 @@ namespace TextAdventureJimmySkinnari
                 {
                     return;
                 }
-
-                Console.WriteLine("Can't use the item on that.");
             }
 
-           
+            Animate.Line("Can't use that...", ConsoleColor.White);
         }
-
         public bool TargetIsDoor(Item item, string[] input, int itemInputIndex)
         {
             foreach (Door door in CurrentRoom.Doors)
@@ -98,10 +98,16 @@ namespace TextAdventureJimmySkinnari
 
                 int itemToBeUsedIndex = Array.FindIndex(input, x => x.Contains(doorName[0].ToUpper()));
 
-                if (itemInputIndex > itemToBeUsedIndex || door.Id != item.Id) // check order of input, if user want to i.e use door on key && if id matches.
+                if (itemInputIndex > itemToBeUsedIndex) // check order of input, if user want to i.e use door on key && if id matches.
                 {
-                    Console.WriteLine($"\nCan't use {item.Name} on {door.Name}.");
-                    return false;
+                    Animate.Line($"Can't use {door.Name} on {item.Name}.", ConsoleColor.White);
+                    return true;
+                }
+
+                if (door.Id != item.Id) // check order of input, if user want to i.e use door on key && if id matches.
+                {
+                    Animate.Line($"Can't use {item.Name} on {door.Name}.", ConsoleColor.White);
+                    return true;
                 }
 
                 door.IsLocked = false;
@@ -109,21 +115,16 @@ namespace TextAdventureJimmySkinnari
                 if (item.Name != "Axe") // Standard unlock message
                 {
                     Inventory.Remove(item);
-                    Console.WriteLine();
-                    GameArt.TypeAnimation($"{door.Name} unlocked.", ConsoleColor.Red);
-                    
+                    Animate.Line($"{door.Name} unlocked.", ConsoleColor.DarkGreen);
+                    return true;
                 }
                 else if (item.Name == "Axe") // Special unlock message when player manage to get into the office
                 {
-
-                    Console.WriteLine("\nYou swing the axe on the door like Jack Nicholson in The Shining until you break up the door completely.");
-                    Console.WriteLine();
-                    GameArt.TypeAnimation($"{door.Name} unlocked.", ConsoleColor.Red);
+                    Animate.Line($"You swing the axe on the door like Jack Nicholson in The Shining until you break up the door completely.", ConsoleColor.DarkGreen);
+                    Animate.Line($"{door.Name} unlocked.", ConsoleColor.DarkGreen);
+                    return true;
                 }
-
-                return true;
             }
-
             return false; ;
         }
         private bool TargetIsRoomItem(Item item, string[] input, int itemIndex)
@@ -138,14 +139,25 @@ namespace TextAdventureJimmySkinnari
                 }
                 int itemToBeUsedIndex = Array.FindIndex(input, x => x.Contains(itemInRoomNameArray[0].ToUpper()));
 
-                if (itemIndex > itemToBeUsedIndex || itemInRoom.Id != item.Id || itemInRoom.CanBeCombined == false)
+                if (itemIndex > itemToBeUsedIndex)
                 {
-                    return false;
+                    Animate.Line($"Can´t use {itemInRoom.Name} on {item.Name}..", ConsoleColor.White);
+                    return true;
                 }
 
-                if (item.Id == 3)
+                if (itemInRoom.Id != item.Id)
                 {
-                    Console.WriteLine("\nYou put the gasmask on to the co-worker and his life might be saved!");
+                    Animate.Line($"Can´t use {item.Name} on {itemInRoom.Name}..", ConsoleColor.White);
+                    return true;
+                }
+
+                if (itemInRoom.CanBeCombined == true)
+                {
+                    if (item.Id == 3)
+                    {
+                        Animate.Line($"You put the gasmask on to the co-worker and his life might be saved!", ConsoleColor.DarkGreen);
+                        return true;
+                    }
                 }
 
                 return true;
@@ -171,17 +183,21 @@ namespace TextAdventureJimmySkinnari
 
                 int itemToBeUsedIndex = Array.FindIndex(input, x => x.Contains(itemInInventoryNameArr[0].ToUpper()));
 
-                if (itemIndex < itemToBeUsedIndex)
+                if (itemIndex > itemToBeUsedIndex)
                 {
-                    if (itemInInventory.Id != item.Id) // if items can be used on eachother.
-                    {
-                        break;
-                    }
-
-                    Inventory.Remove(item);
-                    Inventory.Remove(itemInInventory);
+                    Animate.Line($"Can´t use {itemInInventory.Name} on {item.Name}..", ConsoleColor.White);
                     return true;
                 }
+
+                else if (itemInInventory.Id != item.Id) // if items can be used on eachother.
+                {
+                    Animate.Line($"Can´t use {item.Name} on {itemInInventory.Name}..", ConsoleColor.White);
+                    return true;
+                }
+
+                Inventory.Remove(item);
+                Inventory.Remove(itemInInventory);
+                return true;
             }
 
             return false;
@@ -215,8 +231,8 @@ namespace TextAdventureJimmySkinnari
                     continue;
                 }
                 if (door.IsLocked == true)
-                {
-                    Console.WriteLine(door.ObjectDescription);
+                {                 
+                    Animate.Line(door.ObjectDescription, ConsoleColor.White);
                     return false;
                 }
                 else
@@ -224,8 +240,7 @@ namespace TextAdventureJimmySkinnari
                     return true;
                 }
             }
-
-            Console.WriteLine("You can't go that way..");
+            Animate.Line("You can't go that way..", ConsoleColor.White);
             return false;
         }
         public void Go(string[] direction)

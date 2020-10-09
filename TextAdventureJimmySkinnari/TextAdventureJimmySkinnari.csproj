@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Animate.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
     <Compile Include="Door.cs" />
     <Compile Include="Game.cs" />

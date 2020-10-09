@@ -10,7 +10,7 @@ namespace TextAdventureJimmySkinnari
     public class Game
     {
         Player player;
-
+        string soundPath = @"C:\Users\jimmy\source\repos\TextAdventureJimmySkinnari\TextAdventureJimmySkinnari\typing.wav";
         public Room entrance { get; set; } = new Room("Entrance");
         public Room coridor { get; set; } = new Room("Coridor");
         public Room office { get; set; } = new Room("Office");
@@ -37,15 +37,13 @@ namespace TextAdventureJimmySkinnari
         private void WelcomeText()
         {
             Art.GetGameLogo();
-
             Console.ReadLine();
             Console.Clear();
         }
         private void FirstScene()
         {
-            //WelcomeText();
-            //GameArt.PrintControls();
-            Console.Write("\n\n\t\t\tPress enter to continue..");
+            WelcomeText();
+            GameArt.PrintControls();
             Console.ReadLine();
             Console.Clear();
 
@@ -60,11 +58,12 @@ namespace TextAdventureJimmySkinnari
             string introText2 = $".....\n\n\t\tYou wake up at the entrance of the building.\n\t\tThe main door is locked due to some technical issues from the explotion." +
                $"\n\t\tYou have to rescue you co-worker and put out the fire....";
 
-            SoundPlayer sp = new SoundPlayer(@"typing.mp3");
+            SoundPlayer sp = new SoundPlayer(soundPath);
             sp.Play();
-            GameArt.TypeAnimation(introText, ConsoleColor.DarkGray);
-            GameArt.TypeAnimation(explode, ConsoleColor.Red);
-            GameArt.TypeAnimation(introText2, ConsoleColor.DarkGray);
+            Thread.Sleep(400);
+            Animate.Line(introText, ConsoleColor.DarkGray);
+            Animate.Write(explode, ConsoleColor.Red);
+            Animate.Write(introText2, ConsoleColor.DarkGray);
             sp.Stop();
             Console.WriteLine();
             Console.Write("\n\n\n\n\t\t\t\tPress enter to continue..");
@@ -108,18 +107,15 @@ namespace TextAdventureJimmySkinnari
                 addedRoomInfo += "\t" + item.ObjectDescription + "\n";
             }
 
-            //if (player.CurrentRoom.IsVisited == false)
-            //{
-            //    GameArt.TypeAnimation(room.Description + addedRoomInfo);
-            //    room.IsVisited = true;
-            ////}
-            //else
-            //{
-            //    Console.WriteLine(room.Description + addedRoomInfo);
-            //}
-
-            Console.WriteLine(room.Description + addedRoomInfo);
-
+            if (player.CurrentRoom.IsVisited == false)
+            {
+                Animate.Line(room.Description + addedRoomInfo);
+                room.IsVisited = true;
+            }
+            else
+            {
+                Console.WriteLine(room.Description + addedRoomInfo);
+            }
 
         }
         private void PrintRoomName(Room room)
@@ -138,11 +134,12 @@ namespace TextAdventureJimmySkinnari
 
             PrintRoomInfo(player.CurrentRoom);
 
+            Console.ForegroundColor = ConsoleColor.DarkGray;
             do
             {
                 Output("");
 
-                string[] input = Console.ReadLine().ToUpper().Split(' ').RemoveAll("THE", "UP");
+                string[] input = Console.ReadLine().ToUpper().Split(' ').RemoveAll("THE", "UP", "ON");
 
                 if (input[0] == "LOOK")
                 {
@@ -202,9 +199,9 @@ namespace TextAdventureJimmySkinnari
                         Console.WriteLine("There is no object like that..");
                     }
                     else
-                    {              
+                    {
                         Console.WriteLine();
-                        GameArt.TypeAnimation(objectToInspect.InspectDescription, ConsoleColor.Red);
+                        Animate.Line(objectToInspect.InspectDescription, ConsoleColor.Red);
                     }
                     continue;
                 }
@@ -212,7 +209,8 @@ namespace TextAdventureJimmySkinnari
                 {
                     if (input.Length < 2)
                     {
-                        Console.Write("Where do you want to go?: ");
+                        Animate.Line("Where do you want to go?: ", ConsoleColor.DarkGray);
+
                         input = Console.ReadLine().ToUpper().Split(' ');
                     }
                     else
@@ -241,10 +239,14 @@ namespace TextAdventureJimmySkinnari
 
                 else if (input[0] == "USE")
                 {
+                    if (player.Inventory.Count < 1)
+                    {
+                        Animate.Line("Your inventory is empty", ConsoleColor.DarkGray);
+                    }
                     if (input.Length < 3)
                     {
-                        Output("You must write: \"Use {item name} on {item/door name}\"");
-                        input = Console.ReadLine().ToUpper().Split(' ');
+                        Animate.Line("You must write: \"Use {item name} on {item/door name}\"", ConsoleColor.DarkGray);
+                        continue;
                     }
 
                     player.Use(input);
@@ -256,7 +258,7 @@ namespace TextAdventureJimmySkinnari
                 }
                 else
                 {
-                    Console.WriteLine("What?");
+                    Animate.Line("What?", ConsoleColor.DarkGray);
                     continue;
                 }
 
@@ -316,7 +318,7 @@ namespace TextAdventureJimmySkinnari
         private void Output(string message)
         {
             Console.WriteLine(message);
-            Console.ForegroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine("");
             Console.Write("> ");
             Console.ResetColor();
