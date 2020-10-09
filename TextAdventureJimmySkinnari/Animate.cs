@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,7 +9,6 @@ namespace TextAdventureJimmySkinnari
 {
     class Animate
     {
-
         public static void Write (string line, ConsoleColor color)
         {
             Console.ForegroundColor = color;
@@ -30,8 +30,8 @@ namespace TextAdventureJimmySkinnari
         }
         public static void Line(string line, ConsoleColor color)
         {
-            Console.ForegroundColor = color;
             Console.WriteLine("");
+            Console.ForegroundColor = color;
 
             for (int i = 0; i < line.Length; i++)
             {
@@ -48,7 +48,6 @@ namespace TextAdventureJimmySkinnari
 
             Console.ResetColor();
         }
-
         public static void Line(string line)
         {
             Console.WriteLine("");
@@ -66,7 +65,5 @@ namespace TextAdventureJimmySkinnari
                 }
             }
         }
-
-      
     }
 }

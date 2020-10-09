@@ -4,25 +4,30 @@ namespace TextAdventureJimmySkinnari
 {
     public class GameArt
     {
+
         public void GetGameLogo()
         {
-            Console.WriteLine(@"            )          )    )        (            )     )   (    (   (        ");
-            Console.WriteLine(@"   *   ) ( /(       ( /( ( /(        )\ )      ( /(  ( /(   )\ ) )\ ))\ )     ");
-            Console.WriteLine(@"  ` )  /( )\())(     )\()))\())    ( (()/((     )\()) )\()) (()/((()/(()/((    ");
-            Console.WriteLine(@"   ( )(_)|(_)\ )\   ((_)\((_)\     )\ /(_))\   ((_)\ ((_)\   /(_))/(_))(_))\  ");
-            Console.WriteLine(@"  (_(_()) _((_|(_)   _((_) ((_) _ ((_|_))((_)    ((_) _((_) (_))_(_))(_))((_)");
-            Console.WriteLine(@"  |_   _|| || | __| | || |/ _ \| | | / __| __|  / _ \| \| | | |_ |_ _| _ \ __| ");
-            Console.WriteLine(@"    | |  | __ | _|  | __ | (_) | |_| \__ \ _|  | (_) | .` | | __| | ||   / _|  ");
-            Console.WriteLine(@"    |_|  |_||_|___| |_||_|\___/ \___/|___/___|  \___/|_|\_| |_|  |___|_|_\___|");
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            Animate.Line("                              A text adventure game");
+            Console.SetWindowSize(147, 30);
+            Console.SetBufferSize(147, 30);
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine(@"
+
+              █████▒▄▄▄       ▄████▄  ▄▄▄█████▓ ▒█████   ██▀███ ▓██   ██▓    ▒█████   ███▄    █      █████▒██▓ ██▀███  ▓█████ 
+            ▓██   ▒▒████▄    ▒██▀ ▀█  ▓  ██▒ ▓▒▒██▒  ██▒▓██ ▒ ██▒▒██  ██▒   ▒██▒  ██▒ ██ ▀█   █    ▓██   ▒▓██▒▓██ ▒ ██▒▓█   ▀ 
+            ▒████ ░▒██  ▀█▄  ▒▓█    ▄ ▒ ▓██░ ▒░▒██░  ██▒▓██ ░▄█ ▒ ▒██ ██░   ▒██░  ██▒▓██  ▀█ ██▒   ▒████ ░▒██▒▓██ ░▄█ ▒▒███   
+            ░▓█▒  ░░██▄▄▄▄██ ▒▓▓▄ ▄██▒░ ▓██▓ ░ ▒██   ██░▒██▀▀█▄   ░ ▐██▓░   ▒██   ██░▓██▒  ▐▌██▒   ░▓█▒  ░░██░▒██▀▀█▄  ▒▓█  ▄ 
+            ░▒█░    ▓█   ▓██▒▒ ▓███▀ ░  ▒██▒ ░ ░ ████▓▒░░██▓ ▒██▒ ░ ██▒▓░   ░ ████▓▒░▒██░   ▓██░   ░▒█░   ░██░░██▓ ▒██▒░▒████▒
+             ▒ ░    ▒▒   ▓▒█░░ ░▒ ▒  ░  ▒ ░░   ░ ▒░▒░▒░ ░ ▒▓ ░▒▓░  ██▒▒▒    ░ ▒░▒░▒░ ░ ▒░   ▒ ▒     ▒ ░   ░▓  ░ ▒▓ ░▒▓░░░ ▒░ ░
+             ░       ▒   ▒▒ ░  ░  ▒       ░      ░ ▒ ▒░   ░▒ ░ ▒░▓██ ░▒░      ░ ▒ ▒░ ░ ░░   ░ ▒░    ░      ▒ ░  ░▒ ░ ▒░ ░ ░  ░
+             ░ ░     ░   ▒   ░          ░      ░ ░ ░ ▒    ░░   ░ ▒ ▒ ░░     ░ ░ ░ ▒     ░   ░ ░     ░ ░    ▒ ░  ░░   ░    ░   
+                         ░  ░░ ░                   ░ ░     ░     ░ ░            ░ ░           ░            ░     ░        ░  ░
+             ░                                     ░ ░                                                          
+                                                                                                                          ");
+            Animate.Line("                                                           A text adventure game");
 
             Console.WriteLine("");
             Console.WriteLine("");
-            Animate.Line("                            Press enter to continue..");
-
+            Animate.Line("                                                         Press enter to continue..");
         }
         public string  GetMap()
         {

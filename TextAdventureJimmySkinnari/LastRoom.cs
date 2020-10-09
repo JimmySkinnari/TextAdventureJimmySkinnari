@@ -7,6 +7,7 @@ namespace TextAdventureJimmySkinnari
     {
         public LastRoom(string name) : base(name)
         {
+
         }
     }
 }

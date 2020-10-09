@@ -23,8 +23,8 @@ namespace TextAdventureJimmySkinnari
 
         public void PlayGame()
         {
-            Console.SetWindowSize(120, 30);
-
+            Console.SetWindowSize(147, 30);
+            Console.SetBufferSize(147, 30);
             InitializePlayer();
             InitializeWorld();
             InitializeItems();
@@ -38,6 +38,8 @@ namespace TextAdventureJimmySkinnari
         {
             Art.GetGameLogo();
             Console.ReadLine();
+            Console.SetWindowSize(120, 30);
+            Console.SetBufferSize(120, 30);
             Console.Clear();
         }
         private void FirstScene()
@@ -46,7 +48,6 @@ namespace TextAdventureJimmySkinnari
             GameArt.PrintControls();
             Console.ReadLine();
             Console.Clear();
-
             WriteIntroText();
             Console.Clear();
         }
@@ -70,7 +71,6 @@ namespace TextAdventureJimmySkinnari
 
             Console.ReadKey();
         }
-
         private void PopulateGameObjectsList()
         {
             foreach (Room room in Rooms)
@@ -106,14 +106,15 @@ namespace TextAdventureJimmySkinnari
             {
                 addedRoomInfo += "\t" + item.ObjectDescription + "\n";
             }
-
             if (player.CurrentRoom.IsVisited == false)
             {
+                Console.WriteLine("");
                 Animate.Line(room.Description + addedRoomInfo);
                 room.IsVisited = true;
             }
             else
             {
+                Console.WriteLine("");
                 Console.WriteLine(room.Description + addedRoomInfo);
             }
 
@@ -124,8 +125,10 @@ namespace TextAdventureJimmySkinnari
             Console.Write("        ");
             Console.BackgroundColor = ConsoleColor.Red;
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("\t " + room.Name + "\t \n");
-            Console.ResetColor();
+            Console.WriteLine("\t " + room.Name + " \t");
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("");
         }
 
         private void Update()
@@ -135,6 +138,7 @@ namespace TextAdventureJimmySkinnari
             PrintRoomInfo(player.CurrentRoom);
 
             Console.ForegroundColor = ConsoleColor.DarkGray;
+
             do
             {
                 Output("");
