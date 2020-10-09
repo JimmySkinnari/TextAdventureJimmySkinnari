@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Media;
 
 namespace TextAdventureJimmySkinnari
 {
@@ -16,7 +17,7 @@ namespace TextAdventureJimmySkinnari
         public Room garage { get; set; } = new Room("Garage");
         public Room factory { get; set; } = new LastRoom("Factory");
 
-        public static List<GameObject> GameObjects;
+        public static List<GameObject> GameObjects = new List<GameObject>();
         public GameArt Art { get; set; } = new GameArt();
         public List<Room> Rooms { get; set; } = new List<Room>();
 
@@ -27,6 +28,7 @@ namespace TextAdventureJimmySkinnari
             InitializePlayer();
             InitializeWorld();
             InitializeItems();
+            PopulateGameObjectsList();
             FirstScene();
             Update();
             EndGame();
@@ -41,21 +43,55 @@ namespace TextAdventureJimmySkinnari
         }
         private void FirstScene()
         {
-            WelcomeText();
-            GameArt.PrintControls();
-            Console.WriteLine("");
-            Console.WriteLine("");
-            Console.Write("\t\t\tPress enter to continue..");
+            //WelcomeText();
+            //GameArt.PrintControls();
+            Console.Write("\n\n\t\t\tPress enter to continue..");
             Console.ReadLine();
+            Console.Clear();
+
+            WriteIntroText();
             Console.Clear();
         }
 
+        private void WriteIntroText()
+        {
+            string explode = "explode";
+            string introText = $"\n\t\tYou are at your job and you are just about to leave for the day,\n\t\twhen suddenly one of the gasbottles in the factory ";
+            string introText2 = $".....\n\n\t\tYou wake up at the entrance of the building.\n\t\tThe main door is locked due to some technical issues from the explotion." +
+               $"\n\t\tYou have to rescue you co-worker and put out the fire....";
+
+            SoundPlayer sp = new SoundPlayer(@"typing.mp3");
+            sp.Play();
+            GameArt.TypeAnimation(introText, ConsoleColor.DarkGray);
+            GameArt.TypeAnimation(explode, ConsoleColor.Red);
+            GameArt.TypeAnimation(introText2, ConsoleColor.DarkGray);
+            sp.Stop();
+            Console.WriteLine();
+            Console.Write("\n\n\n\n\t\t\t\tPress enter to continue..");
+
+            Console.ReadKey();
+        }
+
+        private void PopulateGameObjectsList()
+        {
+            foreach (Room room in Rooms)
+            {
+                foreach (GameObject door in room.Doors)
+                {
+                    GameObjects.Add(door);
+                }
+
+                foreach (GameObject item in room.RoomItems)
+                {
+                    GameObjects.Add(item);
+                }
+            }
+        }
         private void PrintRoomInfo(Room room)
         {
             PrintRoomName(room);
             PrintRoomObjects(room);
         }
-
         private void PrintRoomObjects(Room room)
         {
             string addedRoomInfo = "";
@@ -72,10 +108,20 @@ namespace TextAdventureJimmySkinnari
                 addedRoomInfo += "\t" + item.ObjectDescription + "\n";
             }
 
-            room.IsVisited = true;
-            Console.WriteLine(room.Description + addedRoomInfo);
-        }
+            //if (player.CurrentRoom.IsVisited == false)
+            //{
+            //    GameArt.TypeAnimation(room.Description + addedRoomInfo);
+            //    room.IsVisited = true;
+            ////}
+            //else
+            //{
+            //    Console.WriteLine(room.Description + addedRoomInfo);
+            //}
 
+            Console.WriteLine(room.Description + addedRoomInfo);
+
+
+        }
         private void PrintRoomName(Room room)
         {
             Console.WriteLine("");
@@ -128,6 +174,7 @@ namespace TextAdventureJimmySkinnari
                     if (player.Inventory.Count < 1)
                     {
                         Console.WriteLine("Your inventory is empty..");
+                        continue;
                     }
                     else if (input.Length < 2)
                     {
@@ -148,14 +195,16 @@ namespace TextAdventureJimmySkinnari
                         input = Console.ReadLine().ToUpper().Split(' ');
                     }
 
-                    if (player.Inspect(input) == null)
-                    {
+                    var objectToInspect = player.Inspect(input);
 
+                    if (objectToInspect == null)
+                    {
                         Console.WriteLine("There is no object like that..");
                     }
                     else
-                    {
-                        Console.WriteLine(player.Inspect(input).InspectDescription);
+                    {              
+                        Console.WriteLine();
+                        GameArt.TypeAnimation(objectToInspect.InspectDescription, ConsoleColor.Red);
                     }
                     continue;
                 }
@@ -174,7 +223,6 @@ namespace TextAdventureJimmySkinnari
                 }
                 if (input[0] == "NORTH" || input[0] == "EAST" || input[0] == "SOUTH" || input[0] == "WEST")
                 {
-
                     if (player.CanGoTo(input))
                     {
                         player.Go(input);
@@ -195,7 +243,7 @@ namespace TextAdventureJimmySkinnari
                 {
                     if (input.Length < 3)
                     {
-                        Output("You must write: \"Use {item name} on {item/door name} \"");
+                        Output("You must write: \"Use {item name} on {item/door name}\"");
                         input = Console.ReadLine().ToUpper().Split(' ');
                     }
 
@@ -242,7 +290,7 @@ namespace TextAdventureJimmySkinnari
 
             Item key = new Item("key", "Key made of silver on the desk.", 1, "There is a tag to the key that says: \"Factory\".");
             Item fireAxe = new Item("Axe", "Axe with a wooden shaft on the floor.", 2, "This axe looks brutal");
-            Item gasMask = new Item("Gasmask", "Emergancy mask on the shelf.", 3, "") { CanBeCombined = true };
+            Item gasMask = new Item("Gasmask", "Gasmask on the shelf.", 3, "") { CanBeCombined = true };
             Item employee = new Item("Co-worker", "Passed out co-worker lying on the floor", 3, "Co-worker whispers: \"The key to the factory is inside the office..\"") { CanBeCombined = true, CanBePickedUp = false };
             Item phone = new Item("phone", "Phone", 10, "Phone displays \"Enter pin or start emergency call\"") { CanBePickedUp = true };
             Item sprinklerSystem = new Item("sprinkler system", "Factorys sprincler system, the switch is on the wall", 11, "") { CanBePickedUp = false };
@@ -265,7 +313,6 @@ namespace TextAdventureJimmySkinnari
 
             Console.Clear();
         }
-
         private void Output(string message)
         {
             Console.WriteLine(message);

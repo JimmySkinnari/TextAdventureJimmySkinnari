@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace TextAdventureJimmySkinnari
 {
@@ -23,6 +25,23 @@ namespace TextAdventureJimmySkinnari
 
             RoomItems = new List<Item>();
             Doors = new List<Door>();
+        }
+
+        public List<GameObject> GetRoomObjects()
+        {
+            List<GameObject> roomObjects = new List<GameObject>();
+
+            foreach (var item in Doors)
+            {
+                roomObjects.Add(item);
+            }
+
+            foreach (var item in RoomItems)
+            {
+                roomObjects.Add(item);
+            }
+
+            return roomObjects;
         }
     }
 }

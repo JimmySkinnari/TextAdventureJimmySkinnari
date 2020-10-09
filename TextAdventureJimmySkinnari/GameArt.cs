@@ -49,8 +49,28 @@ namespace TextAdventureJimmySkinnari
                                                        |_____________|
                                                                                     ");
         }
-        public void TypeAnimation(string line)
+        public static void TypeAnimation(string line, ConsoleColor color)
         {
+            Console.ForegroundColor = color;
+            for (int i = 0; i < line.Length; i++)
+            {
+                if (line[i] != ' ')
+                {
+                    Console.Write(line[i]);
+                    System.Threading.Thread.Sleep(25); // Sleep for 150 milliseconds
+                }
+                else
+                {
+                    Console.Write(line[i]);
+                }
+            }
+
+            Console.ResetColor();
+        }
+
+        public static void TypeAnimation(string line)
+        {
+            
             for (int i = 0; i < line.Length; i++)
             {
                 if (line[i] != ' ')
@@ -75,7 +95,6 @@ namespace TextAdventureJimmySkinnari
       ╚█████╔╝╚█████╔╝██║░╚███║░░░██║░░░██║░░██║╚█████╔╝███████╗██████╔╝
       ░╚════╝░░╚════╝░╚═╝░░╚══╝░░░╚═╝░░░╚═╝░░╚═╝░╚════╝░╚══════╝╚═════╝░");
 
-            logo1();
         }
         public static void PrintControls()
         {
@@ -120,19 +139,6 @@ namespace TextAdventureJimmySkinnari
 
         }
 
-        public static void logo1()
-        {
-            Console.WriteLine(@"   ____________________________________________________________________________
-  |  ____                                                                      |
-  | [____] [_]   [_][_][_][_] [_][_][_][_] [_][_][_][_] [_][_][_] [_][_][_][_] |
-  |                                                ___                         |
-  | [_][_] [§][1][2][3][4][5][6][7][8][9][0][+]['][___] [_][_][_] [_][_][_][_] |
-  | [_][_] [__][q][å][ä][p][y][f][g][c][r][l][x][@][  | [_][_][_] [_][_][_][ | |
-  | [_][_] [___][a][o][e][u][i][d][h][t][n][s][j][-][_|           [_][_][_][_| |
-  | [_][_] [_][<]['][,][.][k][ö][b][m][w][v][z][______]    [_]    [_][_][_][ | |
-  | [_][_] [__][_][__][_____________________][__][_][_] [_][_][_] [____][_][_| |
-  |____________________________________________________________________________|");
-        }
 
         public static void ChangeTextForegroundToDarkGray()
         {

@@ -4,7 +4,6 @@
     {
         public bool IsLocked { get; set; } = false;
         public string Location { get; set; }
-        public int Id { get; set; }
         public Room RoomBehindDoor { get; set; }
 
         public Door(string name, string location, string doorDescription, Room roomBehindDoor)

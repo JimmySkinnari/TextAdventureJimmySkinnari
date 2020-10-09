@@ -19,13 +19,18 @@ namespace TextAdventureJimmySkinnari
         {
             foreach (Item item in CurrentRoom.RoomItems)
             {
-                if (!input.Contains(item.Name.ToUpper()) || item.CanBePickedUp == false)
+                if (!input.Contains(item.Name.ToUpper()))
                 {
-                    Console.WriteLine("Can't pick that up..");
                     continue;
                 }
 
-                Console.WriteLine($"\n{item.Name} taken.");
+                if (item.CanBePickedUp == false)
+                {
+                    Console.WriteLine($"Can't pick up {item.Name}..");
+                    return;
+                }
+
+                GameArt.TypeAnimation($"\n{item.Name} taken.", ConsoleColor.Red);
                 Inventory.Add(item);
                 CurrentRoom.RoomItems.Remove(item);
                 return;
@@ -45,7 +50,7 @@ namespace TextAdventureJimmySkinnari
                 CurrentRoom.RoomItems.Add(item);
                 Inventory.Remove(item);
 
-                Console.WriteLine(item.Name + " has been dropped.");
+                GameArt.TypeAnimation($"{item.Name} has been dropped.", ConsoleColor.Red);
                 return;
             }
 
@@ -63,23 +68,21 @@ namespace TextAdventureJimmySkinnari
                 }
                 if (TargetIsDoor(item, input, itemIndex))
                 {
-                    break;
+                    return;
                 }
                 else if (TargetIsRoomItem(item, input, itemIndex))
                 {
-                    break;
+                    return;
                 }
                 else if (TargetIsInventoryItem(item, input, itemIndex))
                 {
-                    break;
+                    return;
                 }
-                else
-                {
-                    Console.WriteLine("Can't use the item on that.");
-                }
+
+                Console.WriteLine("Can't use the item on that.");
             }
 
-            return;
+           
         }
 
         public bool TargetIsDoor(Item item, string[] input, int itemInputIndex)
@@ -97,7 +100,7 @@ namespace TextAdventureJimmySkinnari
 
                 if (itemInputIndex > itemToBeUsedIndex || door.Id != item.Id) // check order of input, if user want to i.e use door on key && if id matches.
                 {
-                    Console.WriteLine($"Can't use {item.Name} on {door.Name}.");
+                    Console.WriteLine($"\nCan't use {item.Name} on {door.Name}.");
                     return false;
                 }
 
@@ -106,12 +109,16 @@ namespace TextAdventureJimmySkinnari
                 if (item.Name != "Axe") // Standard unlock message
                 {
                     Inventory.Remove(item);
-                    Console.WriteLine($"{door.Name} unlocked.");
+                    Console.WriteLine();
+                    GameArt.TypeAnimation($"{door.Name} unlocked.", ConsoleColor.Red);
+                    
                 }
                 else if (item.Name == "Axe") // Special unlock message when player manage to get into the office
                 {
-                    Console.WriteLine("You swing the axe on the door like Jack Nicholson in The Shining until you break up the door completely.");
-                    Console.WriteLine($"{door.Name} unlocked.");
+
+                    Console.WriteLine("\nYou swing the axe on the door like Jack Nicholson in The Shining until you break up the door completely.");
+                    Console.WriteLine();
+                    GameArt.TypeAnimation($"{door.Name} unlocked.", ConsoleColor.Red);
                 }
 
                 return true;
@@ -138,11 +145,13 @@ namespace TextAdventureJimmySkinnari
 
                 if (item.Id == 3)
                 {
-                    Console.WriteLine("You put the gasmask on to the co-worker and his life might be saved!");
+                    Console.WriteLine("\nYou put the gasmask on to the co-worker and his life might be saved!");
                 }
+
+                return true;
             }
 
-            return true;
+            return false;
         }
         private bool TargetIsInventoryItem(Item item, string[] input, int itemIndex)
         {
@@ -182,7 +191,15 @@ namespace TextAdventureJimmySkinnari
         {
             foreach (var item in Game.GameObjects)
             {
-                if (input.Contains(item.Name.ToUpper()) && CurrentRoom.Doors.Contains(item) || CurrentRoom.RoomItems.Contains(item))
+                if (input.Contains(item.Name.ToUpper()) && CurrentRoom.Doors.Contains(item) || input.Contains(item.Name.ToUpper()) && CurrentRoom.RoomItems.Contains(item))
+                {
+                    return item;
+                }
+            }
+
+            foreach (var item in Inventory)
+            {
+                if (input.Contains(item.Name.ToUpper()))
                 {
                     return item;
                 }
@@ -218,4 +235,3 @@ namespace TextAdventureJimmySkinnari
         }
     }
 }
-
