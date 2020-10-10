@@ -13,7 +13,6 @@ namespace TextAdventureJimmySkinnari
         public string Description { get; set; } = "";
         public bool IsVisited { get; set; } = false;
 
-
         public Room()
         {
             Doors = new List<Door>();

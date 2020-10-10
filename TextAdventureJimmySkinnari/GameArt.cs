@@ -54,7 +54,6 @@ namespace TextAdventureJimmySkinnari
                                                        |_____________|
                                                                                     ");
         }
-      
         public static void ControlsLogo()
         {
             Console.WriteLine(@"                                                                  
@@ -108,8 +107,6 @@ namespace TextAdventureJimmySkinnari
             Animate.Line("\n\n\t\t\t          Press enter to continue..");
 
         }
-
-
         public static void ChangeTextForegroundToDarkGray()
         {
             Console.BackgroundColor = ConsoleColor.DarkGray;

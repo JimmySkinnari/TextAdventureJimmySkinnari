@@ -14,6 +14,8 @@ namespace TextAdventureJimmySkinnari
         public Room CurrentRoom { get; set; }
         public List<Item> Inventory { get; set; } = new List<Item>();
 
+        public bool HasSavedCoWorker { get; set; } = false;
+
         public Player(string name)
         {
             Name = name;
@@ -156,6 +158,8 @@ namespace TextAdventureJimmySkinnari
                     if (item.Id == 3)
                     {
                         Animate.Line($"You put the gasmask on to the co-worker and his life might be saved!", ConsoleColor.DarkGreen);
+                        HasSavedCoWorker = true;
+                        Inventory.Remove(item);
                         return true;
                     }
                 }
