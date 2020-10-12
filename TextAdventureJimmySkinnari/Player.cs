@@ -67,7 +67,6 @@ namespace TextAdventureJimmySkinnari
                 {
                     continue;
                 }
-
                 int itemIndex = Array.FindIndex(input, x => x.Contains(item.Name.ToUpper()));
 
                 if (TargetIsDoor(item, input, itemIndex))
@@ -209,9 +208,14 @@ namespace TextAdventureJimmySkinnari
 
         internal GameObject Inspect(string[] input)
         {
-            foreach (var item in Game.GameObjects)
+           var list = GetVisibleObjects();
+
+
+            foreach (var item in list)
             {
-                if (input.Contains(item.Name.ToUpper()) && CurrentRoom.Doors.Contains(item) || input.Contains(item.Name.ToUpper()) && CurrentRoom.RoomItems.Contains(item))
+                var itemNameArr = item.Name.ToUpper().Split(' ');
+
+                if (input.Contains(itemNameArr[0]))
                 {
                     return item;
                 }
@@ -219,7 +223,9 @@ namespace TextAdventureJimmySkinnari
 
             foreach (var item in Inventory)
             {
-                if (input.Contains(item.Name.ToUpper()))
+                var itemNameArr = item.Name.ToUpper().Split(' ');
+
+                if (input.Contains(itemNameArr[0]))
                 {
                     return item;
                 }
@@ -251,6 +257,24 @@ namespace TextAdventureJimmySkinnari
         {
             var doorToPass = CurrentRoom.Doors.Find(x => direction.Contains(x.Location.ToUpper()));
             CurrentRoom = doorToPass.RoomBehindDoor;
+        }
+
+        public List<GameObject> GetVisibleObjects()
+        {
+            List<GameObject> visibleObjects = new List<GameObject>();
+
+
+            foreach (GameObject gameObject in CurrentRoom.RoomItems)
+            {
+                visibleObjects.Add(gameObject);
+            }
+
+            foreach (GameObject gameObject in CurrentRoom.Doors)
+            {
+                visibleObjects.Add(gameObject);
+            }
+
+            return visibleObjects;
         }
     }
 }

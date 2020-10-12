@@ -89,7 +89,7 @@ namespace TextAdventureJimmySkinnari
             Console.WriteLine("  INVENTORY/I                             Check your inventory.               ");
 
             Console.ResetColor();
-            Console.WriteLine("          DROP + (item name)                      Drop an item from your inventory.   ");
+            Console.WriteLine("          DROP + (item name)                      Drops an item from your inventory.  ");
 
             Console.Write("        ");
             ChangeTextForegroundToDarkGray();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Media;
+using System.Data.Common;
 
 namespace TextAdventureJimmySkinnari
 {
@@ -10,15 +11,17 @@ namespace TextAdventureJimmySkinnari
     {
         Player player;
         string soundPath = @"C:\Users\jimmy\source\repos\TextAdventureJimmySkinnari\TextAdventureJimmySkinnari\typing.wav";
-        public Room entrance { get; set; } = new Room("Entrance");
-        public Room coridor { get; set; } = new Room("Coridor");
-        public Room office { get; set; } = new Room("Office");
-        public Room garage { get; set; } = new Room("Garage");
-        public Room factory { get; set; } = new LastRoom("Factory");
 
         public static List<GameObject> GameObjects = new List<GameObject>();
         public GameArt Art { get; set; } = new GameArt();
         public List<Room> Rooms { get; set; } = new List<Room>();
+
+        public Room entrance;
+        public Room coridor;
+        public Room office;
+        public Room garage;
+        public Room factory;
+        public Room outside;
 
         public void PlayGame()
         {
@@ -30,6 +33,8 @@ namespace TextAdventureJimmySkinnari
             FirstScene();
             Update();
         }
+
+
         private void WelcomeText()
         {
             Art.GetGameLogo();
@@ -50,9 +55,9 @@ namespace TextAdventureJimmySkinnari
         private void WriteIntroText()
         {
             string explode = "explode";
-            string introText = $"\n\t\tYou are at your job and you are just about to leave for the day,\n\t\twhen suddenly one of the gasbottles in the factory ";
-            string introText2 = $".....\n\n\t\tYou wake up at the entrance of the building.\n\t\tThe main door is locked due to some technical issues from the explotion." +
-               $"\n\t\tYou have to rescue you co-worker and put out the fire in the factory....";
+            string introText = $"\n\t\tYou are at your job and you are just about to leave for the day,\n\t\twhen suddenly one of the gas bottles in the factory ";
+            string introText2 = $".....\n\n\t\tYou wake up at the entrance of the building.\n\t\tThe main door is locked due to some technical issues from the explosion." +
+               $"\n\t\tYou have to rescue your co-worker and put out the fire in the factory....";
 
             SoundPlayer sp = new SoundPlayer(soundPath);
             sp.Play();
@@ -98,19 +103,19 @@ namespace TextAdventureJimmySkinnari
             {
                 addedRoomInfo += "\t" + item.ObjectDescription + "\n";
             }
-            //if (player.CurrentRoom.IsVisited == false)
-            //{
-            //    Console.WriteLine("");
-            //    Animate.Line(room.Description + addedRoomInfo);
-            //    room.IsVisited = true;
-            //}
-            //else
-            //{
-            //    Console.WriteLine("");
-            //    Console.WriteLine(room.Description + addedRoomInfo);
-            //}
-            
-            Console.WriteLine(room.Description + addedRoomInfo);
+            if (player.CurrentRoom.IsVisited == false)
+            {
+                Console.WriteLine("");
+                Animate.Line(room.Description + addedRoomInfo);
+                room.IsVisited = true;
+            }
+            else
+            {
+                Console.WriteLine("");
+                Console.WriteLine(room.Description + addedRoomInfo);
+            }
+
+            //Console.WriteLine(room.Description + addedRoomInfo);
         }
         private void Update()
         {
@@ -122,6 +127,10 @@ namespace TextAdventureJimmySkinnari
 
             do
             {
+                if (player.CurrentRoom.Name == "Outside")
+                {
+                    EndGame();
+                }
                 Output();
 
                 string[] input = Console.ReadLine().ToUpper().Split(' ').RemoveAll("THE", "UP", "ON");
@@ -179,12 +188,12 @@ namespace TextAdventureJimmySkinnari
 
                     if (objectToInspect == null)
                     {
-                        Console.WriteLine("There is no object like that..");
+                        Animate.Line("There is no object like that..", ConsoleColor.DarkGray);
                     }
                     else
                     {
                         Console.WriteLine();
-                        Animate.Line(objectToInspect.InspectDescription, ConsoleColor.Red);
+                        Animate.Line(objectToInspect.InspectDescription, ConsoleColor.DarkGray);
                     }
                     continue;
                 }
@@ -222,6 +231,11 @@ namespace TextAdventureJimmySkinnari
 
                 else if (input[0] == "USE")
                 {
+                    if (input[1] == "SPRINKLER" && player.CurrentRoom.Name == "Factory")
+                    {
+                        UnlockEntranceDoor();
+                        continue;
+                    }
                     if (player.Inventory.Count < 1)
                     {
                         Animate.Line("Your inventory is empty", ConsoleColor.DarkGray);
@@ -257,6 +271,13 @@ namespace TextAdventureJimmySkinnari
 
         private void InitializeWorld()
         {
+            entrance = new Room("Entrance");
+            coridor = new Room("Coridor");
+            office = new Room("Office");
+            garage = new Room("Garage");
+            factory = new Room("Factory");
+            outside = new Room("Outside");
+
             Rooms.Add(entrance);
             Rooms.Add(coridor);
             Rooms.Add(office);
@@ -265,6 +286,7 @@ namespace TextAdventureJimmySkinnari
 
             // Initialize doors
             entrance.Doors.Add(new Door("", "north", "There is an open door to the north that seems to lead to the coridor.", coridor));
+            entrance.Doors.Add(new Door("Entrance door", 10, "south", "The entrance door to the south is locked..", "The security system must be failing after the explosion.", outside));
             coridor.Doors.Add(new Door("Factory door", 1, "north", "Smoke comes out towards you from the tiny cracks around the door to the north that leads to the factory.", "This door is locked. As far as i can remember, the only person who has the key is the supervisor.", factory));
             coridor.Doors.Add(new Door("Office door", 2, "west", "The office to the west is locked.", "The supervisor allways locks his office when he leaves for the day.", office));
             coridor.Doors.Add(new Door("Garage door", "east", "There is an open door to the east that goes to the garage.", garage));
@@ -282,8 +304,8 @@ namespace TextAdventureJimmySkinnari
             Item key = new Item("Key", "Key made of silver on the desk.", 1, "There is a tag to the key that says: \"Factory\".");
             Item fireAxe = new Item("Axe", "Axe with a wooden shaft on the floor.", 2, "This axe looks brutal");
             Item gasMask = new Item("Gasmask", "Gasmask on the shelf.", 3, "") { CanBeCombined = true };
-            Item employee = new Item("Co-worker", "Passed out co-worker lying on the floor", 3, "Co-worker whispers: \"The key to the factory is inside the office..\"") { CanBeCombined = true, CanBePickedUp = false };
-            Item phone = new Item("Phone", "Phone", 10, "Phone displays \"Enter pin or start emergency call\"") { CanBePickedUp = true };
+            Item employee = new Item("Co-worker", "An injured Co-worker is lying on the floor", 3, "Co-worker whispers: \"The key to the factory is inside the office..\"") { CanBeCombined = true, CanBePickedUp = false };
+            //Item phone = new Item("Phone", "Phone", 10, "Phone displays \"Enter pin or start emergency call\"") { CanBePickedUp = true };
             Item sprinklerSystem = new Item("Sprinkler", "Factorys sprinkler system, the switch is on the wall", 11, "") { CanBePickedUp = false };
             Item bluePrints = new Item("Paper", "There is some paper on the desk that looks important.", ga.GetMap());
 
@@ -292,7 +314,7 @@ namespace TextAdventureJimmySkinnari
             office.RoomItems.Add(gasMask);
             garage.RoomItems.Add(fireAxe);
             coridor.RoomItems.Add(employee);
-            coridor.RoomItems.Add(phone);
+            //coridor.RoomItems.Add(phone);
             factory.RoomItems.Add(sprinklerSystem);
         }
         private void InitializePlayer()
@@ -329,6 +351,21 @@ namespace TextAdventureJimmySkinnari
                 }
             }
         }
+
+        private void UnlockEntranceDoor()
+        {
+            foreach (var door in entrance.Doors)
+            {
+                if (door.Name == "Entrance door")
+                {
+                    door.IsLocked = false;
+
+                    Animate.Line("Sprinkler system turned on and the system seems to unlock the entrance door..");
+                    door.ObjectDescription = "Entrance door to the south is now open.";
+                    door.InspectDescription = "Just walk out from the disaster man!..";
+                }
+            }
+        }
         private void EndGame()
         {
             Console.Clear();
@@ -340,7 +377,7 @@ namespace TextAdventureJimmySkinnari
             string nr3 = "\n\t\tUnfortunately your Co-worker passed away from the smokes coming inside \n" +
                     "\t\tthe coridor. You could have save him.... why so selfish??";
 
-            Animate.Line(first,ConsoleColor.DarkGray);
+            Animate.Line(first, ConsoleColor.DarkGray);
 
             if (player.HasSavedCoWorker)
             {
