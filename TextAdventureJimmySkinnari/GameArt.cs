@@ -5,7 +5,6 @@ namespace TextAdventureJimmySkinnari
 {
     public class GameArt
     {
-
         public void GetGameLogo()
         {
             Console.SetWindowSize(147, 30);
@@ -112,48 +111,6 @@ namespace TextAdventureJimmySkinnari
         public static void ChangeTextForegroundToDarkGray()
         {
             Console.BackgroundColor = ConsoleColor.DarkGray;
-        }
-
-        public void Holder()
-        {
-
-            ControlsLogo();
-            Console.WriteLine("");
-            Console.Write("            ");
-            Console.BackgroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine("       C O M M A N D S          /           D E S C R I P T I O N     \n");
-            Console.ResetColor();
-            Console.WriteLine("\t     ------------------------------------------------------------------ ");
-            Console.WriteLine("\n\t  H                                       Displays Help menu.                ");
-
-            Console.Write("        ");
-            ChangeTextForegroundToDarkGray();
-            Console.WriteLine("  LOOK                                    Look around the room.               ");
-
-            Console.ResetColor();
-            Console.WriteLine("          GET/TAKE/PICK/PICK UP                   Pick up something.                  ");
-
-            Console.Write("        ");
-            ChangeTextForegroundToDarkGray();
-            Console.WriteLine("  INVENTORY/I                             Check your inventory.               ");
-
-            Console.ResetColor();
-            Console.WriteLine("          DROP + (item name)                      Drops an item from your inventory.  ");
-
-            Console.Write("        ");
-            ChangeTextForegroundToDarkGray();
-            Console.WriteLine("  GO/MOVE + north/east/west/south         Try to go a certain direction.      ");
-
-            Console.ResetColor();
-            Console.WriteLine("          INSPECT + (item name)                   Inspect item in Inventory/Room.      ");
-
-            Console.Write("        ");
-            ChangeTextForegroundToDarkGray();
-            Console.WriteLine("  USE  + (item name)                      Use an item from your inventory.    ");
-
-            Console.ResetColor();
-
-            Animate.Line("\n\n\t\t\t          Press enter to continue..");
         }
     }
 }

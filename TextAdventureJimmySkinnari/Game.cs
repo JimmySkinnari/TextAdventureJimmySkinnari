@@ -32,7 +32,6 @@ namespace TextAdventureJimmySkinnari
             FirstScene();
             Update();
         }
-
         private void WelcomeText()
         {
             Art.GetGameLogo();
@@ -70,6 +69,11 @@ namespace TextAdventureJimmySkinnari
 
             Console.ReadKey();
         }
+        private void PrintRoomInfo(Room room)
+        {
+            PrintRoomName(room);
+            PrintRoomObjects(room);
+        }
         private void PrintRoomName(Room room)
         {
             Console.WriteLine("");
@@ -81,11 +85,6 @@ namespace TextAdventureJimmySkinnari
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine("");
             Console.WriteLine("");
-        }
-        private void PrintRoomInfo(Room room)
-        {
-            PrintRoomName(room);
-            PrintRoomObjects(room);
         }
         private void PrintRoomObjects(Room room)
         {
@@ -114,6 +113,7 @@ namespace TextAdventureJimmySkinnari
                 Console.WriteLine(room.Description + addedRoomInfo);
             }
         }
+
         private void Update()
         {
             bool gameIsRunning = true;

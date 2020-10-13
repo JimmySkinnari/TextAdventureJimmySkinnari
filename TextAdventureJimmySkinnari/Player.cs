@@ -13,7 +13,6 @@ namespace TextAdventureJimmySkinnari
         public string Name { get; set; }
         public Room CurrentRoom { get; set; }
         public List<Item> Inventory { get; set; } = new List<Item>();
-
         public bool HasSavedCoWorker { get; set; } = false;
 
         public Player(string name)
@@ -69,16 +68,15 @@ namespace TextAdventureJimmySkinnari
                 }
                 int itemIndex = Array.FindIndex(input, x => x.Contains(item.Name.ToUpper()));
 
-                if (TargetIsDoor(item, input, itemIndex))
-                {
-                    return;
-
-                }
-                else if (TargetIsRoomItem(item, input, itemIndex))
+                if (ItemToUseOnIsDoor(item, input, itemIndex))
                 {
                     return;
                 }
-                else if (TargetIsInventoryItem(item, input, itemIndex))
+                else if (ItemToUseOnIsRoomItem(item, input, itemIndex))
+                {
+                    return;
+                }
+                else if (ItemToUseOnIsInventoryItem(item, input, itemIndex))
                 {
                     return;
                 }
@@ -93,7 +91,7 @@ namespace TextAdventureJimmySkinnari
 
             Animate.Line("Can't use that...", ConsoleColor.White);
         }
-        public bool TargetIsDoor(Item item, string[] input, int itemInputIndex)
+        public bool ItemToUseOnIsDoor(Item item, string[] input, int itemInputIndex)
         {
             foreach (Door door in CurrentRoom.Doors)
             {
@@ -139,7 +137,7 @@ namespace TextAdventureJimmySkinnari
             }
             return false; ;
         }
-        private bool TargetIsRoomItem(Item item, string[] input, int itemIndex)
+        private bool ItemToUseOnIsRoomItem(Item item, string[] input, int itemIndex)
         {
             foreach (var itemInRoom in CurrentRoom.RoomItems)
             {
@@ -179,7 +177,7 @@ namespace TextAdventureJimmySkinnari
 
             return false;
         }
-        private bool TargetIsInventoryItem(Item item, string[] input, int itemIndex)
+        private bool ItemToUseOnIsInventoryItem(Item item, string[] input, int itemIndex)
         {
             foreach (var itemInInventory in Inventory)
             {
@@ -195,9 +193,9 @@ namespace TextAdventureJimmySkinnari
                     continue;
                 }
 
-                int itemToBeUsedIndex = Array.FindIndex(input, x => x.Contains(itemInInventoryNameArr[0].ToUpper()));
+                int itemToBeUsedOnIndex = Array.FindIndex(input, x => x.Contains(itemInInventoryNameArr[0].ToUpper()));
 
-                if (itemIndex > itemToBeUsedIndex)
+                if (itemIndex > itemToBeUsedOnIndex)
                 {
                     Animate.Line($"Can´t use {itemInInventory.Name} on {item.Name}..", ConsoleColor.White);
                     return true;
