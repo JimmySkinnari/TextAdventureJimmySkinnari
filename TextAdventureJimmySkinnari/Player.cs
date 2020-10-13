@@ -84,6 +84,13 @@ namespace TextAdventureJimmySkinnari
                 }
             }
 
+            if (input[input.Length - 1] == "DOOR")
+            {
+
+                Animate.Line("You must tell me on what door..", ConsoleColor.White);
+                return;
+            }
+
             Animate.Line("Can't use that...", ConsoleColor.White);
         }
         public bool TargetIsDoor(Item item, string[] input, int itemInputIndex)
@@ -112,16 +119,20 @@ namespace TextAdventureJimmySkinnari
                 }
 
                 door.IsLocked = false;
+                door.ObjectDescription = $"The {door.Name} to the {door.Location} is unlocked.";
+                door.InspectDescription = $"There is nothing special about the {door.Name}";
 
                 if (item.Name != "Axe") // Standard unlock message
                 {
                     Inventory.Remove(item);
+
                     Animate.Line($"{door.Name} unlocked.", ConsoleColor.DarkGreen);
                     return true;
                 }
                 else if (item.Name == "Axe") // Special unlock message when player manage to get into the office
                 {
                     Animate.Line($"You swing the axe on the door like Jack Nicholson in The Shining until you break up the door completely.", ConsoleColor.DarkGreen);
+                    Console.WriteLine("");
                     Animate.Line($"{door.Name} unlocked.", ConsoleColor.DarkGreen);
                     return true;
                 }
@@ -208,7 +219,7 @@ namespace TextAdventureJimmySkinnari
 
         internal GameObject Inspect(string[] input)
         {
-           var list = GetVisibleObjects();
+            var list = GetVisibleObjects();
 
 
             foreach (var item in list)
@@ -241,7 +252,7 @@ namespace TextAdventureJimmySkinnari
                     continue;
                 }
                 if (door.IsLocked == true)
-                {                 
+                {
                     Animate.Line(door.ObjectDescription, ConsoleColor.White);
                     return false;
                 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Serialization;
 
 namespace TextAdventureJimmySkinnari
 {
@@ -68,13 +69,61 @@ namespace TextAdventureJimmySkinnari
         }
         public static void PrintControls()
         {
+
+            ControlsLogo();
+            Console.WriteLine("");
+            Console.Write("            ");
+            Console.BackgroundColor = ConsoleColor.DarkGray;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("       C O M M A N D S          /           D E S C R I P T I O N     ");
+            Console.ResetColor();
+            Console.WriteLine("");
+            Console.WriteLine("\t     ------------------------------------------------------------------ "); 
+            Console.WriteLine("\n\t  H                                       Displays Help menu.                ");
+
+            Console.Write("        ");
+            ChangeTextForegroundToDarkGray();
+            Console.Write("  LOOK                                    Look around the room.               ");
+            Console.ResetColor();
+            Console.WriteLine("");
+            Console.WriteLine("          GET/TAKE/PICK/PICK UP                   Pick up something.                  ");
+
+            Console.Write("        ");
+            ChangeTextForegroundToDarkGray();
+            Console.Write("  INVENTORY/I                             Check your inventory.               ");
+            Console.ResetColor();
+            Console.WriteLine("");
+            Console.WriteLine("          DROP + (item name)                      Drops an item from your inventory.  ");
+
+            Console.Write("        ");
+            ChangeTextForegroundToDarkGray();
+            Console.Write("  GO/MOVE + north/east/west/south         Try to go a certain direction.      ");
+            Console.ResetColor();
+            Console.WriteLine("");
+            Console.WriteLine("          INSPECT + (item name)                   Inspect item in Inventory/Room.      ");
+
+            Console.Write("        ");
+            ChangeTextForegroundToDarkGray();
+            Console.Write("  USE  + (item name)                      Use an item from your inventory.    ");           
+            Console.ResetColor();
+            Console.WriteLine("");
+
+        }
+        public static void ChangeTextForegroundToDarkGray()
+        {
+            Console.BackgroundColor = ConsoleColor.DarkGray;
+        }
+
+        public void Holder()
+        {
+
             ControlsLogo();
             Console.WriteLine("");
             Console.Write("            ");
             Console.BackgroundColor = ConsoleColor.DarkGray;
             Console.WriteLine("       C O M M A N D S          /           D E S C R I P T I O N     \n");
             Console.ResetColor();
-            Console.WriteLine("\t     ------------------------------------------------------------------ "); 
+            Console.WriteLine("\t     ------------------------------------------------------------------ ");
             Console.WriteLine("\n\t  H                                       Displays Help menu.                ");
 
             Console.Write("        ");
@@ -105,11 +154,6 @@ namespace TextAdventureJimmySkinnari
             Console.ResetColor();
 
             Animate.Line("\n\n\t\t\t          Press enter to continue..");
-
-        }
-        public static void ChangeTextForegroundToDarkGray()
-        {
-            Console.BackgroundColor = ConsoleColor.DarkGray;
         }
     }
 }

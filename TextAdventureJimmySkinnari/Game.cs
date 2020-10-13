@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Media;
-using System.Data.Common;
 
 namespace TextAdventureJimmySkinnari
 {
@@ -34,7 +33,6 @@ namespace TextAdventureJimmySkinnari
             Update();
         }
 
-
         private void WelcomeText()
         {
             Art.GetGameLogo();
@@ -47,6 +45,7 @@ namespace TextAdventureJimmySkinnari
         {
             WelcomeText();
             GameArt.PrintControls();
+            Animate.Line("\n\n\t\t\t          Press enter to continue..");
             Console.ReadLine();
             Console.Clear();
             WriteIntroText();
@@ -55,7 +54,7 @@ namespace TextAdventureJimmySkinnari
         private void WriteIntroText()
         {
             string explode = "explode";
-            string introText = $"\n\t\tYou are at your job and you are just about to leave for the day,\n\t\twhen suddenly one of the gas bottles in the factory ";
+            string introText = $"\n\t\tJust moments ago at your job you were just about to leave for the day,\n\t\twhen suddenly one of the gas bottles in the factory ";
             string introText2 = $".....\n\n\t\tYou wake up at the entrance of the building.\n\t\tThe main door is locked due to some technical issues from the explosion." +
                $"\n\t\tYou have to rescue your co-worker and put out the fire in the factory....";
 
@@ -114,8 +113,6 @@ namespace TextAdventureJimmySkinnari
                 Console.WriteLine("");
                 Console.WriteLine(room.Description + addedRoomInfo);
             }
-
-            //Console.WriteLine(room.Description + addedRoomInfo);
         }
         private void Update()
         {
@@ -197,7 +194,7 @@ namespace TextAdventureJimmySkinnari
                     }
                     continue;
                 }
-                else if (input[0] == "GO")
+                else if (input[0] == "GO" || input[0] == "MOVE")
                 {
                     if (input.Length < 2)
                     {
@@ -208,7 +205,6 @@ namespace TextAdventureJimmySkinnari
                     else
                     {
                         input = input.Skip(1).ToArray();
-                        continue;
                     }
                 }
                 if (input[0] == "NORTH" || input[0] == "EAST" || input[0] == "SOUTH" || input[0] == "WEST")
@@ -231,7 +227,7 @@ namespace TextAdventureJimmySkinnari
 
                 else if (input[0] == "USE")
                 {
-                    if (input[1] == "SPRINKLER" && player.CurrentRoom.Name == "Factory")
+                    if (input[1] == "SWITCH" && player.CurrentRoom.Name == "Factory")
                     {
                         UnlockEntranceDoor();
                         continue;
@@ -304,7 +300,7 @@ namespace TextAdventureJimmySkinnari
             Item key = new Item("Key", "Key made of silver on the desk.", 1, "There is a tag to the key that says: \"Factory\".");
             Item fireAxe = new Item("Axe", "Axe with a wooden shaft on the floor.", 2, "This axe looks brutal");
             Item gasMask = new Item("Gasmask", "Gasmask on the shelf.", 3, "") { CanBeCombined = true };
-            Item employee = new Item("Co-worker", "An injured Co-worker is lying on the floor", 3, "Co-worker whispers: \"The key to the factory is inside the office..\"") { CanBeCombined = true, CanBePickedUp = false };
+            Item employee = new Item("Co-worker", "An injured Co-worker is lying on the floor", 3, $"Co-worker whispers: \"{player.Name} i'm so glad that you are alive! I'm hurt, i can barely breath...\n\t\t     i think the key to the factory is inside the office..\"") { CanBeCombined = true, CanBePickedUp = false };
             //Item phone = new Item("Phone", "Phone", 10, "Phone displays \"Enter pin or start emergency call\"") { CanBePickedUp = true };
             Item sprinklerSystem = new Item("Sprinkler", "Factorys sprinkler system, the switch is on the wall", 11, "") { CanBePickedUp = false };
             Item bluePrints = new Item("Paper", "There is some paper on the desk that looks important.", ga.GetMap());
