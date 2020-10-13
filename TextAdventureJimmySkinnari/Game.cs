@@ -189,6 +189,12 @@ namespace TextAdventureJimmySkinnari
                     }
                     else
                     {
+                        if (objectToInspect.Name.ToUpper() == "PAPER")
+                        {
+                            Console.WriteLine("");
+                            Console.WriteLine(objectToInspect.InspectDescription);
+                            continue;
+                        }
                         Console.WriteLine();
                         Animate.Line(objectToInspect.InspectDescription, ConsoleColor.DarkGray);
                     }
